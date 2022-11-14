@@ -18,8 +18,8 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Transaction>(itemView) {
         transaction = data
 
         textName.text = transaction.name
-        textDate.text = transaction.getDate().toString()
-        textValue.text = transaction.value.toString()
+        textDate.text = transaction.date.toString()
+        textValue.text = transaction.amount.toString()
         buttonStatus.text = transaction.transactionType.name
 
         //TODO: add recycler

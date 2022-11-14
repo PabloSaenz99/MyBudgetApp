@@ -1,31 +1,21 @@
 package psb.mybudget.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.*
 
-class Budget(val ID: String = UUID.randomUUID().toString(), var name: String, var description: String = "") {
+@Entity
+data class Budget(
+    @PrimaryKey val ID: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "amount") var amount: Double,
+    @ColumnInfo(name = "description") var description: String = "") {
 
-    constructor(name1: String, description1: String = ""): this(name = name1, description = description1)
-
-    private var transactionsList = mutableListOf<Transaction>()
-
-    fun addTransaction(transaction: Transaction) {
-        transaction.budgetIdList.add(ID)
-        transactionsList.add(transaction)
-    }
-
-    fun removeTransaction(transaction: Transaction) {
-        transaction.budgetIdList.remove(ID)
-        transactionsList.remove(transaction)
-    }
-
-    fun getTransactionTotalAmount(): Double {
-        var amount: Double = 0.0
-        for (t in transactionsList)
-            amount+=t.value
-        return amount
-    }
+    constructor(name1: String, amount1: Double, description1: String = ""):
+            this(UUID.randomUUID().toString(), name1, amount1, description1)
 
     override fun toString(): String{
-        return "[ID: $ID - Name: $name - Desc: $description] - $transactionsList"
+        return "[ID: $ID - Name: $name - Desc: $description]"
     }
 }

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import psb.mybudget.models.Budget
 import kotlin.math.log
 
 /**
@@ -26,9 +27,10 @@ import kotlin.math.log
  * @param <ELEMENT> tipo de dato proporcionado
  * @return el adaptador creado
 </ELEMENT></T> */
-fun <T, ELEMENT> createLinearRecycler(data: Array<ELEMENT>, viewHolderClass: Class<T>,
-                                      @IdRes recyclerId: Int, @LayoutRes layoutId: Int, view: View,
-                                      @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
+fun <T, ELEMENT> createLinearRecycler(
+    data: Array<ELEMENT>, viewHolderClass: Class<T>,
+    @IdRes recyclerId: Int, @LayoutRes layoutId: Int, view: View,
+    @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
 ): RecyclerAdapter<T, ELEMENT> where T : MyViewHolder<ELEMENT> {
     val recyclerView: RecyclerView = view.findViewById(recyclerId)
     recyclerView.layoutManager = LinearLayoutManager(view.context, orientation, false)

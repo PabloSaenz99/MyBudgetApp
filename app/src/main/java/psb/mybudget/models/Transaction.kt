@@ -1,18 +1,26 @@
 package psb.mybudget.models;
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
-class Transaction (val ID: String = UUID.randomUUID().toString(), val name: String,
-                   val value: Double, val transactionType: TransactionType,
-                   private val date: Date = Date(), val budgetIdList: MutableSet<String> = mutableSetOf()) {
+@Entity
+data class Transaction (
+    @PrimaryKey val ID: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "amount") val amount: Double,
+    @ColumnInfo(name = "transactionType") val transactionType: TransactionType,
+    @ColumnInfo(name = "date") val date: Date = Date()) {
 
-    constructor(name: String, value: Double, transactionType: TransactionType, date: Date = Date(),
-                budgetIdList: MutableSet<String> = mutableSetOf()):
-            this(UUID.randomUUID().toString(), name, value, transactionType, date, budgetIdList)
+    constructor(name: String, value: Double, transactionType: TransactionType, date: Date = Date()):
+            this(UUID.randomUUID().toString(), name, value, transactionType, date)
 
-    fun getDate(): Date = date
+    //val budgetIdList: MutableSet<String> = mutableSetOf()
 
     override fun toString(): String{
-        return "[ID: $ID - Name: $name - Value: $value - Date: $date] - $budgetIdList"
+        return "[ID: $ID - Name: $name - Value: $amount - Date: $date] - "
     }
 }
