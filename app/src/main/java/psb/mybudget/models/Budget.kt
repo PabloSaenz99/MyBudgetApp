@@ -16,6 +16,6 @@ data class Budget(
             this(UUID.randomUUID().toString(), name1, amount1, description1)
 
     override fun toString(): String{
-        return "[ID: $ID - Name: $name - Desc: $description]"
+        return "{ID: $ID - Name: $name - Desc: $description - Amount: $amount}"
     }
 }

@@ -6,29 +6,17 @@ import psb.mybudget.models.Budget
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.models.sql.BudgetDAO
 
-class HomeViewModel(private val budgetDAO: BudgetDAO) : ViewModel() {
+class HomeViewModel(appDatabase: AppDatabase) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
-
-    val budgetList: LiveData<List<Budget>> = budgetDAO.getAll().asLiveData()
-
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
-    fun insert(budget: Budget) = viewModelScope.launch {
-        budgetDAO.insert(budget)
-    }
+    val budgetList: LiveData<List<Budget>> = appDatabase.BudgetTable().getAll().asLiveData()
 
 }
 
-class HomeViewModelFactory(private val budgetDAO: BudgetDAO) : ViewModelProvider.Factory {
+class HomeViewModelFactory(private val appDatabase: AppDatabase) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(budgetDAO) as T
+            return HomeViewModel(appDatabase) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

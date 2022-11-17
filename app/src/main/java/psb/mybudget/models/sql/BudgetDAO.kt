@@ -11,11 +11,14 @@ interface BudgetDAO {
     @Query("SELECT * FROM Budget")
     fun getAll(): Flow<List<Budget>>
 
+    @Query("SELECT * FROM Budget b WHERE b.name = :budgetName")
+    fun getBudgetByName(budgetName: String): Flow<List<Budget>>
+
     @Query("SELECT * FROM Budget b WHERE b.ID = :budgetId")
     suspend fun getBudgetById(budgetId: String): Budget
 
-    @Query("SELECT * FROM Budget b WHERE b.name = :budgetName")
-    suspend fun getBudgetByName(budgetName: String): List<Budget>
+    //@Query("SELECT SUM(amount) FROM [Transaction] t INNER JOIN TransactionBudget tb ON t.ID = tb.transactionId AND tb.budgetId = :budgetId")
+    //suspend fun getAmount(budgetId: String)
 
     @Query("UPDATE Budget SET amount = :amount WHERE Budget.ID = :budgetId")
     suspend fun updateAmount(budgetId: String, amount: Double)

@@ -32,6 +32,7 @@ fun <T, ELEMENT> createLinearRecycler(
     @IdRes recyclerId: Int, @LayoutRes layoutId: Int, view: View,
     @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
 ): RecyclerAdapter<T, ELEMENT> where T : MyViewHolder<ELEMENT> {
+
     val recyclerView: RecyclerView = view.findViewById(recyclerId)
     recyclerView.layoutManager = LinearLayoutManager(view.context, orientation, false)
     val adapter: RecyclerAdapter<T, ELEMENT> = RecyclerAdapter(data, layoutId, viewHolderClass)

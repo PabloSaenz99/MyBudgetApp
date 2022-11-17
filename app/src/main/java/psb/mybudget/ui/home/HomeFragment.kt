@@ -1,6 +1,7 @@
 package psb.mybudget.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,15 +32,15 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         val homeViewModel = ViewModelProvider(this,
-            HomeViewModelFactory(AppDatabase.getInstance(root.context, ).budgetDAO()))[HomeViewModel::class.java]
+            HomeViewModelFactory(AppDatabase.getInstance(root.context)))[HomeViewModel::class.java]
 
-        val adapter = createLinearRecycler(homeViewModel.budgetList.value?.toTypedArray()?: arrayOf<Budget>(),
+        val adapter = createLinearRecycler(homeViewModel.budgetList.value?.toTypedArray()?: arrayOf(),
             BudgetAdapter::class.java, R.id.recyclerHomeBudgetList, R.layout.recycler_budget, root)
 
-        homeViewModel.budgetList.observe(viewLifecycleOwner, Observer { budgets ->
-            // Update the cached copy of the words in the adapter.
+        homeViewModel.budgetList.observe(viewLifecycleOwner) { budgets ->
             budgets?.let { adapter.setData(it.toTypedArray()) }
-        })
+            Log.i("aaaaaaaaaaaa", budgets.toString())
+        }
 
         return root
     }

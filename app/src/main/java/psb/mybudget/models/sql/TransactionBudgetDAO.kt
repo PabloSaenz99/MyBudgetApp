@@ -27,6 +27,12 @@ interface TransactionBudgetDAO {
     @Delete
     suspend fun delete(transactionBudget: TransactionBudget)
 
+    @Query("DELETE FROM TransactionBudget WHERE TransactionBudget.transactionId = :transactionId")
+    suspend fun deleteByTransactionId(transactionId: String)
+
+    @Query("DELETE FROM TransactionBudget WHERE TransactionBudget.budgetId = :budgetId")
+    suspend fun deleteByBudgetId(budgetId: String)
+
     @Query("DELETE FROM TransactionBudget")
     suspend fun deleteAll()
 

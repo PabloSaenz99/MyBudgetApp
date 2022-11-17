@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val applicationScope = CoroutineScope(SupervisorJob())
+        //Init database
+        AppDatabase.getInstance(applicationContext, CoroutineScope(SupervisorJob()))
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
