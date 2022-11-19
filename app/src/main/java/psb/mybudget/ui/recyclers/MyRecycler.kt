@@ -6,16 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import psb.mybudget.ui.MainActivity
 
 
-class RecyclerAdapter<T: MyViewHolder<DATA>, DATA>(
+class MyRecycler<T: MyViewHolder<DATA>, DATA>(
     private var dataSet: Array<DATA>,
     @LayoutRes private val layout: Int,
-    private val _class: Class<T>) : RecyclerView.Adapter<T>() {
+    private val _class: Class<T>
+) : RecyclerView.Adapter<T>() {
 
     private val holders: MutableList<T> = mutableListOf()
 

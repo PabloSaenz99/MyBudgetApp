@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!--Custom colors-->
     <color name="orange">#ff8700</color>
     <color name="negative_value">#C70039 </color>
     <color name="positive_value">#39912C</color>

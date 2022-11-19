@@ -4,12 +4,9 @@ import android.content.Context
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import psb.mybudget.models.Budget
-import psb.mybudget.models.Transaction
-import psb.mybudget.models.TransactionBudget
-import psb.mybudget.models.TransactionType
+import psb.mybudget.models.*
 
-@Database(entities = [Transaction::class, TransactionBudget::class, Budget::class], version = 1)
+@Database(entities = [MyTransaction::class, TransactionBudget::class, Budget::class], version = 1)
 @TypeConverters(DBConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -20,7 +17,8 @@ abstract class AppDatabase : RoomDatabase() {
     inner class BudgetTable {
         fun getAll() = budgetDAO().getAll()
         fun getByName(budgetName: String) = budgetDAO().getBudgetByName(budgetName)
-        fun getById(budgetId: String) = scope?.launch{ budgetDAO().getBudgetById(budgetId)}
+        suspend fun getById(budgetId: String) = budgetDAO().getBudgetById(budgetId)
+        fun getByTransactionId(transactionId: String) = budgetDAO().getBudgetNamesByTransactionId(transactionId)
 
         fun add(budget: Budget) { scope?.launch { budgetDAO().insert(budget) } }
 
@@ -36,14 +34,14 @@ abstract class AppDatabase : RoomDatabase() {
     inner class TransactionTable {
         fun getAll(budgetId: String) = transactionDAO().getByBudgetId(budgetId)
 
-        fun add(transaction: Transaction, budgetId: String) {
+        fun add(transaction: MyTransaction, budgetId: String) {
             scope?.launch {
                 transactionDAO().insert(transaction)
                 transactionBudgetDAO().insert(TransactionBudget(transaction.ID, budgetId))
             }
         }
 
-        fun remove(transaction: Transaction) {
+        fun remove(transaction: MyTransaction) {
             scope?.launch {
                 transactionBudgetDAO().deleteByTransactionId(transaction.ID)
                 transactionDAO().delete(transaction)
@@ -85,9 +83,9 @@ abstract class AppDatabase : RoomDatabase() {
                     instance?.budgetDAO()?.insert(b1)
                     instance?.budgetDAO()?.insert(b2)
 
-                    val t1 = Transaction("Mc Donalds", 3.45, TransactionType.PAID)
-                    val t2 = Transaction("The lord of the rings", 0.69, TransactionType.RECEIVED)
-                    val t3 = Transaction("Star Wars V and popcorns", -2.6, TransactionType.PAID)
+                    val t1 = MyTransaction("Mc Donalds", 3.45, TransactionType.PAID)
+                    val t2 = MyTransaction("The lord of the rings", 0.69, TransactionType.RECEIVED)
+                    val t3 = MyTransaction("Star Wars V and popcorns", -2.6, TransactionType.PAID)
                     instance?.transactionDAO()?.insert(t1)
                     instance?.transactionDAO()?.insert(t2)
                     instance?.transactionDAO()?.insert(t3)

@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Entity
-data class Transaction (
+data class MyTransaction (
     @PrimaryKey val ID: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "amount") val amount: Double,

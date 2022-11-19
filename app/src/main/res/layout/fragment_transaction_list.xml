@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.TransactionListFragment" >
+    tools:context=".ui.TransactionListFragment">
 
     <include
         android:id="@+id/includeBudget"
@@ -12,6 +12,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerFragmentTransactionSort"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/includeBudget" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTransactionList"
@@ -21,11 +29,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerFragmentTransactionSort" />
 
-    <Spinner
-        android:id="@+id/spinnerFragmentTransactionSort"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/includeBudget" />
 </androidx.constraintlayout.widget.ConstraintLayout>

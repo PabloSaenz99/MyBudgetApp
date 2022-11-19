@@ -4,8 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_transaction_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_budget.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.31657608695652173" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.31657608695652173" />
         <entry key="app/src/main/res/layout/fragment_transaction_list.xml" value="0.2817028985507246" />
         <entry key="app/src/main/res/layout/recycler_budget.xml" value="0.2817028985507246" />

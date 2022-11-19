@@ -1,33 +1,31 @@
 package psb.mybudget.models.sql
 
-import android.content.Context
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import psb.mybudget.models.Transaction
+import psb.mybudget.models.MyTransaction
 
 @Dao
 interface TransactionDAO {
-    @Query("SELECT * FROM [Transaction]")
-    fun getAll(): Flow<List<Transaction>>
+    @Query("SELECT * FROM MyTransaction")
+    fun getAll(): Flow<List<MyTransaction>>
 
-    @Query("SELECT * FROM [Transaction] t " +
-            "JOIN TransactionBudget tb ON t.ID = tb.transactionId " +
-            "JOIN Budget b ON b.ID = :budgetId")
-    fun getByBudgetId(budgetId: String): Flow<List<Transaction>>
+    @Query("SELECT * FROM MyTransaction t " +
+            "INNER JOIN TransactionBudget tb ON t.ID = tb.transactionId " +
+            "WHERE tb.budgetId = :budgetId")
+    fun getByBudgetId(budgetId: String): Flow<List<MyTransaction>>
 
-    @Query("SELECT * FROM [Transaction] t WHERE t.ID = :transactionId")
-    suspend fun getById(transactionId: String): Transaction
+    @Query("SELECT * FROM MyTransaction t WHERE t.ID = :transactionId")
+    suspend fun getById(transactionId: String): MyTransaction
 
     @Insert
-    suspend fun insert(trans: Transaction)
+    suspend fun insert(transaction: MyTransaction)
 
     @Delete
-    suspend fun delete(transaction: Transaction)
+    suspend fun delete(transaction: MyTransaction)
 
-    @Query("DELETE FROM [Transaction]")
+    @Query("DELETE FROM MyTransaction")
     suspend fun deleteAll()
 }

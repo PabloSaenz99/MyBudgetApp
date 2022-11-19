@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setMainActivity(this)
         //Init database
         AppDatabase.getInstance(applicationContext, CoroutineScope(SupervisorJob()))
 
@@ -37,5 +38,12 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    companion object {
+        lateinit var activity: MainActivity
+
+        fun setMainActivity(activity: MainActivity) { this.activity = activity }
+        fun getMainActivity() : AppCompatActivity = activity
     }
 }
