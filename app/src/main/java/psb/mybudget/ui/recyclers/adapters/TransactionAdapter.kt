@@ -29,14 +29,11 @@ class TransactionAdapter(itemView: View) : MyViewHolder<MyTransaction>(itemView)
         textDate.text = transaction.date.toString()
         textValue.text = transaction.amount.toString()
         buttonStatus.text = transaction.transactionType.name
-        Log.i("T", transaction.toString())
 
         AppDatabase.getInstance(itemView.context).BudgetTable().getByTransactionId(transaction.ID).asLiveData()
             .observe(itemView.context as LifecycleOwner) { budgets ->
-                Log.i("Names", budgets.toString())
-                createLinearRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
-                    R.id.recyclerTransactionBudgetList, R.layout.recycler_budget_id,
-                    itemView, RecyclerView.HORIZONTAL)
+                createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
+                    R.id.recyclerTransactionBudgetList, R.layout.recycler_budget_id, itemView, 4)
         }
     }
 

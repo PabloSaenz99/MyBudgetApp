@@ -16,8 +16,9 @@ fun startActivity(activity: Class<Activity>, context: Context, view: View) {
     view.context.startActivity(intent)
 }
 
-fun replaceFragment(name: String, newFragment: Fragment, @IdRes oldFragmentId: Int = R.id.nav_host_fragment_activity_main,
-                    fragmentManager: FragmentManager = MainActivity.getMainActivity().supportFragmentManager) {
+fun replaceFragment(newFragment: Fragment, @IdRes oldFragmentId: Int = R.id.nav_host_fragment_activity_main,
+                    fragmentManager: FragmentManager = MainActivity.getMainActivity().supportFragmentManager,
+                    name: String? = null) {
     fragmentManager.commit {
         replace(oldFragmentId, newFragment)
         //disallowAddToBackStack()

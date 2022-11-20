@@ -1,12 +1,12 @@
 package psb.mybudget.ui.recyclers.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import psb.mybudget.R
 import psb.mybudget.models.Budget
+import psb.mybudget.ui.MainActivity
 import psb.mybudget.ui.TransactionListFragment
 import psb.mybudget.ui.recyclers.MyViewHolder
 import psb.mybudget.ui.recyclers.getGradientColor
@@ -22,7 +22,6 @@ class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
 
     @SuppressLint("SetTextI18n")
     override fun setData(data: Budget) {
-
         budget = data
 
         textName.text = budget.name
@@ -39,7 +38,8 @@ class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
         }
 
         itemView.setOnClickListener {
-            replaceFragment("BudgetFragment", TransactionListFragment(budget.ID))
+            MainActivity.getMainActivity().currentBudget = budget.ID
+            replaceFragment(TransactionListFragment(budget.ID), R.id.fragmentMain, name = "BudgetFragment")
         }
     }
 

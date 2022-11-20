@@ -1,12 +1,15 @@
 package psb.mybudget.ui
 
+import android.R.attr.country
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
@@ -19,6 +22,7 @@ import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.recyclers.adapters.TransactionAdapter
 import psb.mybudget.ui.recyclers.createLinearRecycler
+
 
 /**
  * A simple [Fragment] subclass.
@@ -42,17 +46,29 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        
+
         _view = inflater.inflate(R.layout.fragment_transaction_list, container, false)
 
         val db = AppDatabase.getInstance(rootView.context)
 
-        val budgetName: TextView = rootView.findViewById(R.id.textBudgetName)
-        val budgetDesc: TextView = rootView.findViewById(R.id.textBudgetDescription)
-        val budgetAmount: TextView = rootView.findViewById(R.id.textBudgetTotalAmount)
+        val budgetView: View = rootView.findViewById(R.id.includeBudget)
+        val budgetName: TextView = budgetView.findViewById(R.id.textBudgetName)
+        val budgetDesc: TextView = budgetView.findViewById(R.id.textBudgetDescription)
+        val budgetAmount: TextView = budgetView.findViewById(R.id.textBudgetTotalAmount)
+
+        val spinner: Spinner = rootView.findViewById(R.id.spinnerFragmentTransactionSort)
+        ArrayAdapter.createFromResource(rootView.context, R.array.sort_by, android.R.layout.simple_spinner_item)
+            .also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = adapter
+        }
+
 
         CoroutineScope(SupervisorJob()).launch {
             budget = db.BudgetTable().getById(budgetId)
+
             budgetName.text = budget.name
             budgetDesc.text = budget.description
             budgetAmount.text = budget.amount.toString() + "€"
@@ -65,6 +81,6 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
                 R.id.recyclerTransactionList, R.layout.recycler_transaction, rootView)
         })
 
-        return inflater.inflate(R.layout.fragment_transaction_list, container, false)
+        return rootView
     }
 }

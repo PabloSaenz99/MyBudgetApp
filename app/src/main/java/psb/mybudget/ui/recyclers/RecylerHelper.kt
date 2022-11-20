@@ -2,6 +2,7 @@ package psb.mybudget.ui.recyclers
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
@@ -31,9 +32,10 @@ fun <T, ELEMENT> createLinearRecycler(
 
     val recyclerView: RecyclerView = view.findViewById(recyclerId)
     recyclerView.layoutManager = LinearLayoutManager(view.context, orientation, false)
-    val my: MyRecycler<T, ELEMENT> = MyRecycler(data, layoutId, viewHolderClass)
-    recyclerView.adapter = my
-    return my
+    val adapter: MyRecycler<T, ELEMENT> = MyRecycler(data, layoutId, viewHolderClass)
+    recyclerView.adapter = adapter
+
+    return adapter
 }
 
 /**

@@ -8,6 +8,10 @@ plugins {
 android {
     compileSdk 32
 
+    dataBinding {
+        enabled true
+    }
+
     defaultConfig {
         applicationId "psb.mybudget"
         minSdk 27

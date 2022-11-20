@@ -3,7 +3,9 @@
     android:id="@+id/textBudgetRecyclerName"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
-    android:background="#BE3A3A"
     android:text="Texto"
-    android:textSize="20sp" />
+    style="@style/title_s"
+    android:padding="5dp"
+    android:layout_margin="1dp"
+    android:radius="50dp"
+    android:background="@drawable/rounded"/>

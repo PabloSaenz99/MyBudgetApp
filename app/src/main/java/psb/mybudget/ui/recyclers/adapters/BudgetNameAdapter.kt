@@ -15,7 +15,7 @@ import psb.mybudget.utils.replaceFragment
 class BudgetNameAdapter(itemView: View) : MyViewHolder<String>(itemView) {
 
     private lateinit var name: String
-    private var textName: TextView = itemView.findViewById(R.id.textBudgetName)
+    private var textName: TextView = itemView.findViewById(R.id.textBudgetRecyclerName)
 
     override fun setData(data: String) {
         name = data

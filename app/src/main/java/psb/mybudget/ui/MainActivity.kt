@@ -16,6 +16,7 @@ import psb.mybudget.models.sql.AppDatabase
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    var currentBudget: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +42,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        lateinit var activity: MainActivity
+        private lateinit var activity: MainActivity
 
         fun setMainActivity(activity: MainActivity) { this.activity = activity }
-        fun getMainActivity() : AppCompatActivity = activity
+        fun getMainActivity() : MainActivity = activity
     }
 }
