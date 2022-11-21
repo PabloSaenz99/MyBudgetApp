@@ -6,4 +6,11 @@
     <dimen name="margin">5dp</dimen>
     <dimen name="padding">5dp</dimen>
     <dimen name="radius">10dp</dimen>
+
+    <dimen name="size_xl">23sp</dimen>
+    <dimen name="size_l">20sp</dimen>
+    <dimen name="size_m">17sp</dimen>
+    <dimen name="size_s">14sp</dimen>
+
+    <dimen name="stroke">3dp</dimen>
 </resources>

@@ -24,7 +24,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/includeBudget" />
+        app:layout_constraintTop_toBottomOf="@+id/includeBudget"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTransactionList"

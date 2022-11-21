@@ -22,6 +22,8 @@ import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.recyclers.adapters.TransactionAdapter
 import psb.mybudget.ui.recyclers.createLinearRecycler
+import psb.mybudget.utils.addBooleanToList
+import psb.mybudget.utils.getStroke
 
 
 /**
@@ -64,7 +66,7 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
-
+        spinner.background = getStroke(rootView, R.color.white, null)
 
         CoroutineScope(SupervisorJob()).launch {
             budget = db.BudgetTable().getById(budgetId)
@@ -77,7 +79,8 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
         val transactionList: LiveData<List<MyTransaction>> = db.TransactionTable().getAll(budgetId).asLiveData()
         transactionList.observe(viewLifecycleOwner, Observer { transactions ->
             Log.i("Trans", transactions.toString())
-            createLinearRecycler(transactions.toTypedArray(), TransactionAdapter::class.java,
+            createLinearRecycler(
+                addBooleanToList(transactions, false).toTypedArray(), TransactionAdapter::class.java,
                 R.id.recyclerTransactionList, R.layout.recycler_transaction, rootView)
         })
 

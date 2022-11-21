@@ -1,41 +1,71 @@
 package psb.mybudget.ui.recyclers.adapters
 
-import android.util.Log
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
-import android.widget.Button
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
-import androidx.recyclerview.widget.RecyclerView
 import psb.mybudget.R
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.recyclers.MyViewHolder
 import psb.mybudget.ui.recyclers.createGridRecycler
-import psb.mybudget.ui.recyclers.createLinearRecycler
+import psb.mybudget.utils.getStroke
 
-class TransactionAdapter(itemView: View) : MyViewHolder<MyTransaction>(itemView) {
 
+class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Boolean>>(itemView) {
+
+    private var isEnabled: Boolean = false
     private lateinit var transaction: MyTransaction
-    private var textName: TextView = itemView.findViewById(R.id.textTransactionName)
-    private var textDate: TextView = itemView.findViewById(R.id.textTransactionDate)
-    private var textValue: TextView = itemView.findViewById(R.id.textTransactionValue)
-    private var buttonStatus: Button = itemView.findViewById(R.id.buttonTransactionStatus)
+    private val textName: TextView = itemView.findViewById(R.id.textTransactionName)
+    private val textDate: TextView = itemView.findViewById(R.id.textTransactionDate)
+    private val textAmount: TextView = itemView.findViewById(R.id.textTransactionValue)
+    private val spinner: Spinner = itemView.findViewById(R.id.spinnerTransactionStatus)
 
-    override fun setData(data: MyTransaction) {
-        transaction = data
+    override fun setData(data: Pair<MyTransaction, Boolean>) {
+        transaction = data.first
+        isEnabled = data.second
 
         textName.text = transaction.name
         textDate.text = transaction.date.toString()
-        textValue.text = transaction.amount.toString()
-        buttonStatus.text = transaction.transactionType.name
+        textAmount.text = transaction.amount.toString()
+
+        textDate.isEnabled = isEnabled
+        textAmount.isEnabled = isEnabled
+
+        val spinnerAdapter = ArrayAdapter. createFromResource(itemView.context, R.array.transaction_status_value, android.R.layout.simple_spinner_item)
+            .also { adapter ->
+                // Specify the layout to use when the list of choices appears
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                // Apply the adapter to the spinner
+                spinner.adapter = adapter
+            }
+        spinner.setSelection(spinnerAdapter.getPosition(transaction.transactionType.toString()))
+
+        if(transaction.amount < 0) {
+            textAmount.setTextColor(itemView.resources.getColor(R.color.negative_value))
+            itemView.background = getStroke(itemView, R.color.negative_value)
+        }
+        else {
+            textAmount.setTextColor(itemView.resources.getColor(R.color.positive_value))
+            itemView.background = getStroke(itemView, R.color.positive_value)
+        }
 
         AppDatabase.getInstance(itemView.context).BudgetTable().getByTransactionId(transaction.ID).asLiveData()
             .observe(itemView.context as LifecycleOwner) { budgets ->
                 createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
                     R.id.recyclerTransactionBudgetList, R.layout.recycler_budget_id, itemView, 4)
         }
+
+        if(isEnabled){
+            itemView.setOnClickListener {
+                //TODO: click button
+            }
+        }
     }
 
-    override fun getData(): MyTransaction { return transaction }
+    override fun getData(): Pair<MyTransaction, Boolean> { return Pair(transaction, isEnabled) }
 }

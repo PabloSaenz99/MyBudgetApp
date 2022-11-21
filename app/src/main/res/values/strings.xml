@@ -12,10 +12,17 @@
         <item>Positive</item>
         <item>Received</item>
     </string-array>
+
+    <string-array name="transaction_status_value">
+        <item>WITHHELD</item>
+        <item>PAID</item>
+        <item>RECEIVED</item>
+        <item>OUTSTANDING</item>
+        <item>RECEIVE PENDING</item>
+    </string-array>
     <string name="title_activity_transaction_list">TransactionListActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="transaction_status_text">Status:</string>
-    <string name="transaction_status_value">PAID</string>
 </resources>

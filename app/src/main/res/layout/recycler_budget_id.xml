@@ -1,11 +1,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/textBudgetRecyclerName"
+    android:id="@+id/buttonBudgetRecyclerName"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Texto"
-    style="@style/title_s"
-    android:padding="5dp"
-    android:layout_margin="1dp"
-    android:radius="50dp"
-    android:background="@drawable/rounded"/>
+    android:background="@drawable/rounded"
+    android:text="Texto"/>
