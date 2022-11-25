@@ -1,24 +1,24 @@
-package psb.mybudget.ui
+package psb.mybudget.ui.home.transactions
 
-import android.R.attr.country
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import psb.mybudget.R
 import psb.mybudget.models.Budget
 import psb.mybudget.models.MyTransaction
+import psb.mybudget.models.TransactionType
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.recyclers.adapters.TransactionAdapter
 import psb.mybudget.ui.recyclers.createLinearRecycler
@@ -54,9 +54,9 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
         val db = AppDatabase.getInstance(rootView.context)
 
         val budgetView: View = rootView.findViewById(R.id.includeBudget)
-        val budgetName: TextView = budgetView.findViewById(R.id.textBudgetName)
-        val budgetDesc: TextView = budgetView.findViewById(R.id.textBudgetDescription)
-        val budgetAmount: TextView = budgetView.findViewById(R.id.textBudgetTotalAmount)
+        val budgetName: TextView = budgetView.findViewById(R.id.rb_text_budgetName)
+        val budgetDesc: TextView = budgetView.findViewById(R.id.rb_text_budgetDescription)
+        val budgetAmount: TextView = budgetView.findViewById(R.id.rb_text_budgetAmount)
 
         val spinner: Spinner = rootView.findViewById(R.id.spinnerFragmentTransactionSort)
         ArrayAdapter.createFromResource(rootView.context, R.array.sort_by, android.R.layout.simple_spinner_item)
@@ -68,21 +68,44 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
         }
         spinner.background = getStroke(rootView, R.color.white, null)
 
+
         CoroutineScope(SupervisorJob()).launch {
             budget = db.BudgetTable().getById(budgetId)
 
             budgetName.text = budget.name
             budgetDesc.text = budget.description
             budgetAmount.text = budget.amount.toString() + "€"
+
+            val gd = GradientDrawable()
+            gd.setColor(rootView.context.getColor(budget.color))
+            rootView.background = gd
         }
 
-        val transactionList: LiveData<List<MyTransaction>> = db.TransactionTable().getAll(budgetId).asLiveData()
+        val list: MutableList<MyTransaction> = mutableListOf()
+        db.TransactionTable().getAllIn(budgetId, list)
+        val transactionList: MutableLiveData<MutableList<MyTransaction>> = MutableLiveData(list)
         transactionList.observe(viewLifecycleOwner, Observer { transactions ->
-            Log.i("Trans", transactions.toString())
             createLinearRecycler(
                 addBooleanToList(transactions, false).toTypedArray(), TransactionAdapter::class.java,
                 R.id.recyclerTransactionList, R.layout.recycler_transaction, rootView)
         })
+
+        spinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                when(position){
+                    0 -> transactionList.value = list.sortedBy { it.date } as MutableList<MyTransaction>
+                    1 -> transactionList.value = list.sortedByDescending { it.date } as MutableList<MyTransaction>
+                    2 -> transactionList.value = list.sortedBy { it.amount } as MutableList<MyTransaction>
+                    3 -> transactionList.value = list.sortedByDescending { it.amount } as MutableList<MyTransaction>
+                    4 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.RECEIVED } as MutableList<MyTransaction>
+                    5 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.PAID } as MutableList<MyTransaction>
+                    6 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.WITHHELD } as MutableList<MyTransaction>
+                    7 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.RECEIVE_PENDING } as MutableList<MyTransaction>
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         return rootView
     }

@@ -15,10 +15,10 @@ interface BudgetDAO {
     @Query("SELECT * FROM Budget b WHERE b.ID = :budgetId")
     suspend fun getBudgetById(budgetId: String): Budget
 
-    @Query("SELECT name FROM Budget b " +
+    @Query("SELECT name color FROM Budget b " +
             "INNER JOIN TransactionBudget tb ON b.ID = tb.budgetId " +
             "WHERE tb.transactionId = :transactionId")
-    fun getBudgetNamesByTransactionId(transactionId: String): Flow<List<String>>
+    fun getBudgetNamesColorsByTransactionId(transactionId: String): Flow<List<String>>
 
     //@Query("SELECT SUM(amount) FROM MyTransaction t INNER JOIN TransactionBudget tb ON t.ID = tb.transactionId AND tb.budgetId = :budgetId")
     //suspend fun getAmount(budgetId: String)

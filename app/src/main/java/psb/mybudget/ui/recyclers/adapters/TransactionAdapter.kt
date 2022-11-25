@@ -1,7 +1,5 @@
 package psb.mybudget.ui.recyclers.adapters
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -20,10 +18,10 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Bool
 
     private var isEnabled: Boolean = false
     private lateinit var transaction: MyTransaction
-    private val textName: TextView = itemView.findViewById(R.id.textTransactionName)
-    private val textDate: TextView = itemView.findViewById(R.id.textTransactionDate)
-    private val textAmount: TextView = itemView.findViewById(R.id.textTransactionValue)
-    private val spinner: Spinner = itemView.findViewById(R.id.spinnerTransactionStatus)
+    private val textName: TextView = itemView.findViewById(R.id.rt_text_transactionName)
+    private val textDate: TextView = itemView.findViewById(R.id.rt_textDate_transactionDate)
+    private val textAmount: TextView = itemView.findViewById(R.id.rt_number_transactionAmount)
+    private val spinner: Spinner = itemView.findViewById(R.id.rt_spinner_transactionStatus)
 
     override fun setData(data: Pair<MyTransaction, Boolean>) {
         transaction = data.first
@@ -57,7 +55,7 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Bool
         AppDatabase.getInstance(itemView.context).BudgetTable().getByTransactionId(transaction.ID).asLiveData()
             .observe(itemView.context as LifecycleOwner) { budgets ->
                 createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
-                    R.id.recyclerTransactionBudgetList, R.layout.recycler_budget_id, itemView, 4)
+                    R.id.rt_recycler_transactionBudgets, R.layout.recycler_budget_id, itemView, 4)
         }
 
         if(isEnabled){

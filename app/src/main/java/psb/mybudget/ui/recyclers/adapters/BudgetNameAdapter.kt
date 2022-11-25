@@ -9,7 +9,7 @@ import psb.mybudget.ui.recyclers.MyViewHolder
 class BudgetNameAdapter(itemView: View) : MyViewHolder<String>(itemView) {
 
     private lateinit var name: String
-    private var textName: TextView = itemView.findViewById(R.id.buttonBudgetRecyclerName)
+    private var textName: TextView = itemView.findViewById(R.id.rbi_text_budgetName)
 
     override fun setData(data: String) {
         name = data

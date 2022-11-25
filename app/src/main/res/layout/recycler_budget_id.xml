@@ -1,6 +1,6 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/buttonBudgetRecyclerName"
+    android:id="@+id/rbi_text_budgetName"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/rounded"

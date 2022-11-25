@@ -1,10 +1,13 @@
 package psb.mybudget.models.sql
 
 import android.content.Context
+import android.graphics.Color
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import psb.mybudget.models.*
+import psb.mybudget.R
 
 @Database(entities = [MyTransaction::class, TransactionBudget::class, Budget::class], version = 1)
 @TypeConverters(DBConverters::class)
@@ -18,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getAll() = budgetDAO().getAll()
         fun getByName(budgetName: String) = budgetDAO().getBudgetByName(budgetName)
         suspend fun getById(budgetId: String) = budgetDAO().getBudgetById(budgetId)
-        fun getByTransactionId(transactionId: String) = budgetDAO().getBudgetNamesByTransactionId(transactionId)
+        fun getByTransactionId(transactionId: String) = budgetDAO().getBudgetNamesColorsByTransactionId(transactionId)
 
         fun add(budget: Budget) { scope?.launch { budgetDAO().insert(budget) } }
 
@@ -32,7 +35,12 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     inner class TransactionTable {
-        fun getAll(budgetId: String) = transactionDAO().getByBudgetId(budgetId)
+        fun getAllIn(budgetId: String, destination: MutableList<MyTransaction>){
+            scope?.launch {
+                destination.clear()
+                destination.addAll(transactionDAO().getByBudgetId(budgetId))
+            }
+        }
 
         fun add(transaction: MyTransaction, budgetId: String) {
             scope?.launch {
@@ -63,13 +71,13 @@ abstract class AppDatabase : RoomDatabase() {
                 this.instance = instance
 
                 //Add elements to the database
-                scope?.launch { populateDatabase() }
+                scope?.launch { populateDatabase(context) }
                 // return instance
                 instance
             }
         }
 
-        private suspend fun populateDatabase() {
+        private suspend fun populateDatabase(context: Context) {
             /*
             instance?.budgetDAO()?.deleteAll()
             instance?.transactionDAO()?.deleteAll()
@@ -78,8 +86,9 @@ abstract class AppDatabase : RoomDatabase() {
 
             instance?.budgetDAO()?.getAll()?.collect{ it ->
                 if(it.isEmpty()) {
-                    val b1 = Budget("Food", 0.0, "Money spent in restaurants")
-                    val b2 = Budget("Cinema", 0.0, "Money spent in cinema")
+                    Color.BLUE
+                    val b1 = Budget("Food", 0.0, R.color.gradient_blue, "Money spent in restaurants")
+                    val b2 = Budget("Cinema", 0.0, R.color.gradient_yellow, "Money spent in cinema")
                     instance?.budgetDAO()?.insert(b1)
                     instance?.budgetDAO()?.insert(b2)
 

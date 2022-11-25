@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerTransactionBudgetList"
+        android:id="@+id/rt_recycler_transactionBudgets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +30,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerTransactionBudgetList">
+        app:layout_constraintTop_toBottomOf="@+id/rt_recycler_transactionBudgets">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -40,13 +40,13 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textTransactionName"
+                android:id="@+id/rt_text_transactionName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/title_m"/>
 
             <EditText
-                android:id="@+id/textTransactionDate"
+                android:id="@+id/rt_textDate_transactionDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="date"
@@ -54,7 +54,7 @@
         </LinearLayout>
 
         <EditText
-            android:id="@+id/textTransactionValue"
+            android:id="@+id/rt_number_transactionAmount"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:inputType="number"
@@ -71,12 +71,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/transaction_status_text"
-            app:layout_constraintEnd_toStartOf="@+id/spinnerTransactionStatus"
+            app:layout_constraintEnd_toStartOf="@+id/rt_spinner_transactionStatus"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
         <Spinner
-            android:id="@+id/spinnerTransactionStatus"
+            android:id="@+id/rt_spinner_transactionStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"

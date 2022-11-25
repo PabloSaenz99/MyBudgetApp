@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.View
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
@@ -63,6 +64,14 @@ fun <T, ELEMENT> createGridRecycler(
     return my
 }
 
+fun getGradientColorFromRes(context: Context, @ColorRes colorId: Int, perc: Double): Int {
+    //Get alpha and transform into decimal
+    val alpha = Integer.toHexString((255*perc).toInt()).toInt(16)
+    //Get color from res
+    val color = ContextCompat.getColor(context, colorId)
+    //Return color argb
+    return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
+}
 fun getGradientColor(context: Context, @ColorRes colorId: Int, perc: Double): Int {
     //Get alpha and transform into decimal
     val alpha = Integer.toHexString((255*perc).toInt()).toInt(16)
@@ -71,3 +80,4 @@ fun getGradientColor(context: Context, @ColorRes colorId: Int, perc: Double): In
     //Return color argb
     return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
 }
+

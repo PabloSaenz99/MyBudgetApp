@@ -32,7 +32,7 @@ class HomeFragment : Fragment() {
             HomeViewModelFactory(AppDatabase.getInstance(root.context)))[HomeViewModel::class.java]
 
         val adapter = createLinearRecycler(homeViewModel.budgetList.value?.toTypedArray()?: arrayOf(),
-            BudgetAdapter::class.java, R.id.recyclerHomeBudgetList, R.layout.recycler_budget, root)
+            BudgetAdapter::class.java, R.id.fh_recycler_budget, R.layout.recycler_budget, root)
 
         homeViewModel.budgetList.observe(viewLifecycleOwner) { budgets ->
             budgets?.let { adapter.setData(it.toTypedArray()) }

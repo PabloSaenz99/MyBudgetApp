@@ -7,18 +7,18 @@ import androidx.core.content.ContextCompat
 import psb.mybudget.R
 import psb.mybudget.models.Budget
 import psb.mybudget.ui.MainActivity
-import psb.mybudget.ui.TransactionListFragment
+import psb.mybudget.ui.home.transactions.TransactionListFragment
 import psb.mybudget.ui.recyclers.MyViewHolder
-import psb.mybudget.ui.recyclers.getGradientColor
+import psb.mybudget.utils.getStroke
 import psb.mybudget.utils.replaceFragment
 
 
 class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
 
     private lateinit var budget: Budget
-    private var textName: TextView = itemView.findViewById(R.id.textBudgetName)
-    private var textDescription: TextView = itemView.findViewById(R.id.textBudgetDescription)
-    private var textAmount: TextView = itemView.findViewById(R.id.textBudgetTotalAmount)
+    private var textName: TextView = itemView.findViewById(R.id.rb_text_budgetName)
+    private var textDescription: TextView = itemView.findViewById(R.id.rb_text_budgetDescription)
+    private var textAmount: TextView = itemView.findViewById(R.id.rb_text_budgetAmount)
 
     @SuppressLint("SetTextI18n")
     override fun setData(data: Budget) {
@@ -29,13 +29,15 @@ class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
         textAmount.text = budget.amount.toString() + "€"
 
         if(budget.amount >= 0) {
-            itemView.setBackgroundColor(getGradientColor(itemView.context, R.color.positive_value, 0.15))
+            itemView.background = getStroke(itemView, R.color.positive_value, budget.color)
             textAmount.setTextColor(ContextCompat.getColor(itemView.context, R.color.positive_value))
         }
         else {
-            itemView.setBackgroundColor(getGradientColor(itemView.context, R.color.negative_value, 0.15))
+            itemView.background = getStroke(itemView, R.color.negative_value, budget.color)
+            //itemView.setBackgroundColor(getGradientColor(itemView.context, R.color.negative_value, 0.15))
             textAmount.setTextColor(ContextCompat.getColor(itemView.context, R.color.negative_value))
         }
+        //itemView.setBackgroundColor(getGradientColor(itemView.context, budget.color, 0.15))
 
         itemView.setOnClickListener {
             MainActivity.getMainActivity().currentBudget = budget.ID

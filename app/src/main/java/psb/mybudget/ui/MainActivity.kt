@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        //Layout xml item names: firstLettersOfLayoutName_typeOfWidget_classWhichEditThisWidget
         setMainActivity(this)
         //Init database
         AppDatabase.getInstance(applicationContext, CoroutineScope(SupervisorJob()))

@@ -1,5 +1,5 @@
 package psb.mybudget.models
 
 enum class TransactionType {
-    WITHHELD, PAID, RECEIVED, OUTSTANDING, RECEIVE_PENDING
+    WITHHELD, PAID, RECEIVED, RECEIVE_PENDING
 }

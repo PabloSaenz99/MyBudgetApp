@@ -31,14 +31,14 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/textBudgetName"
+                    android:id="@+id/rb_text_budgetName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="9"
                     style="@style/title_l"/>
 
                 <TextView
-                    android:id="@+id/textBudgetTotalAmount"
+                    android:id="@+id/rb_text_budgetAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -47,7 +47,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textBudgetDescription"
+                android:id="@+id/rb_text_budgetDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

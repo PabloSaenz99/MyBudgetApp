@@ -1,10 +1,13 @@
 package psb.mybudget.models.sql
 
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import psb.mybudget.models.MyTransaction
 
 @Dao
@@ -15,7 +18,7 @@ interface TransactionDAO {
     @Query("SELECT * FROM MyTransaction t " +
             "INNER JOIN TransactionBudget tb ON t.ID = tb.transactionId " +
             "WHERE tb.budgetId = :budgetId")
-    fun getByBudgetId(budgetId: String): Flow<List<MyTransaction>>
+    suspend fun getByBudgetId(budgetId: String): List<MyTransaction>
 
     @Query("SELECT * FROM MyTransaction t WHERE t.ID = :transactionId")
     suspend fun getById(transactionId: String): MyTransaction

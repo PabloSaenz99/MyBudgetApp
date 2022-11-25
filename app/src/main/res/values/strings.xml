@@ -7,10 +7,14 @@
 
     <!--https://code.tutsplus.com/es/tutorials/how-to-add-a-dropdown-menu-in-android-studio//DOBLE GUION AQUI//-cms-37860-->
     <string-array name="sort_by">
-        <item>Date</item>
+        <item>Date (newest first)</item>
+        <item>Date (oldest first)</item>
         <item>Negative</item>
         <item>Positive</item>
         <item>Received</item>
+        <item>Paid</item>
+        <item>Withheld</item>
+        <item>Pending</item>
     </string-array>
 
     <string-array name="transaction_status_value">
@@ -25,4 +29,6 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="transaction_status_text">Status:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

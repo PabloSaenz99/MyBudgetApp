@@ -13,5 +13,6 @@
     <color name="negative_value">#C70039 </color>
     <color name="positive_value">#39912C</color>
 
-    <color name="gradient_blue">#4D0098ff</color>
+    <color name="gradient_blue">#260098ff</color>
+    <color name="gradient_yellow">#26e9d700</color>
 </resources>
