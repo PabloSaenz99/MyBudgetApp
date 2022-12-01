@@ -2,12 +2,15 @@ package psb.mybudget.models.sql
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import psb.mybudget.models.*
 import psb.mybudget.R
+import psb.mybudget.ui.recyclers.adapters.BudgetNameAdapter
 
 @Database(entities = [MyTransaction::class, TransactionBudget::class, Budget::class], version = 1)
 @TypeConverters(DBConverters::class)
@@ -21,7 +24,28 @@ abstract class AppDatabase : RoomDatabase() {
         fun getAll() = budgetDAO().getAll()
         fun getByName(budgetName: String) = budgetDAO().getBudgetByName(budgetName)
         suspend fun getById(budgetId: String) = budgetDAO().getBudgetById(budgetId)
-        fun getByTransactionId(transactionId: String) = budgetDAO().getBudgetNamesColorsByTransactionId(transactionId)
+        fun getByTransactionId(transactionId: String) = budgetDAO().getBudgetsByTransactionId(transactionId)
+        fun getByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<BudgetNameAdapter.Data>>){
+            scope?.launch {
+                budgetDAO().getBudgetsByTransactionId(transactionId).collect {
+                    val aux = mutableListOf<BudgetNameAdapter.Data>()
+                    it.forEach { b -> aux.add(BudgetNameAdapter.Data(transactionId, b.ID, b.name, b.color, true)) }
+                    destination.postValue(aux)
+                }
+            }
+        }
+
+        fun getAllAndMatchByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<BudgetNameAdapter.Data>>, editable: Boolean = false) {
+            scope?.launch {
+                getAll().collect { all ->
+                    getByTransactionId(transactionId).collect { some ->
+                        val aux = mutableListOf<BudgetNameAdapter.Data>()
+                        all.forEach { b -> aux.add(BudgetNameAdapter.Data(transactionId, b.ID, b.name, b.color, some.contains(b))) }
+                        destination.postValue(aux)
+                    }
+                }
+            }
+        }
 
         fun add(budget: Budget) { scope?.launch { budgetDAO().insert(budget) } }
 
@@ -35,10 +59,9 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     inner class TransactionTable {
-        fun getAllIn(budgetId: String, destination: MutableList<MyTransaction>){
+        fun getAllIn(budgetId: String, destination: MutableLiveData<List<MyTransaction>>){
             scope?.launch {
-                destination.clear()
-                destination.addAll(transactionDAO().getByBudgetId(budgetId))
+                destination.postValue(transactionDAO().getByBudgetId(budgetId).toMutableList())
             }
         }
 
@@ -55,6 +78,26 @@ abstract class AppDatabase : RoomDatabase() {
                 transactionDAO().delete(transaction)
             }
         }
+
+        fun update(transaction: MyTransaction){
+            scope?.launch {
+                transactionDAO().update(transaction)
+            }
+        }
+    }
+
+    inner class TransactionBudgetTable() {
+        fun insert(transactionId: String, budgetId: String){
+            scope?.launch {
+                transactionBudgetDAO().insert(TransactionBudget(transactionId, budgetId))
+            }
+        }
+
+        fun remove(transactionId: String, budgetId: String){
+            scope?.launch {
+                transactionBudgetDAO().delete(TransactionBudget(transactionId, budgetId))
+            }
+        }
     }
 
     //Singleton
@@ -62,22 +105,22 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile private var instance: AppDatabase? = null
         @Volatile private var scope: CoroutineScope? = null
 
-        fun getInstance(context: Context, scope: CoroutineScope? = null): AppDatabase {
+        fun getInstance(context: Context? = null, scope: CoroutineScope? = null): AppDatabase {
             return instance ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext, AppDatabase::class.java, "AppDatabase"
+                    context!!.applicationContext, AppDatabase::class.java, "AppDatabase"
                 ).build()
                 this.scope = scope
                 this.instance = instance
 
                 //Add elements to the database
-                scope?.launch { populateDatabase(context) }
+                scope?.launch { populateDatabase() }
                 // return instance
                 instance
             }
         }
 
-        private suspend fun populateDatabase(context: Context) {
+        private suspend fun populateDatabase() {
             /*
             instance?.budgetDAO()?.deleteAll()
             instance?.transactionDAO()?.deleteAll()

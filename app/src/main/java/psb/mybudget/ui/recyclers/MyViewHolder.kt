@@ -3,6 +3,7 @@ package psb.mybudget.ui.recyclers
 import android.app.Activity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class MyViewHolder<DATA>(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -4,7 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.transactions.EditTransactionFragment" >
+    android:background="@color/white"
+    tools:context=".ui.home.transactions.EditTransactionFragment">
+
+    <EditText
+        android:id="@+id/fet_editNumber_transactionAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="5"
+        android:inputType="number"
+        android:text="3.45"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fet_editText_transactionName" />
+
+    <EditText
+        android:id="@+id/fet_editText_transactionName"
+        style="@style/title_l"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fet_recycler_transactionBudgets" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fet_recycler_transactionBudgets"
@@ -15,43 +36,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fet_recycler_transactionBudgets">
-
-        <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/fet_editText_transactionName"
-                style="@style/title_l"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/fet_editText_transactionDescription"
-                style="@style/title_m"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/fet_editNumber_transactionAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="5"
-            android:inputType="number"
-            android:text="3.45" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -59,7 +43,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+        app:layout_constraintTop_toBottomOf="@+id/fet_editNumber_transactionAmount">
 
         <TextView
             android:id="@+id/textView5"

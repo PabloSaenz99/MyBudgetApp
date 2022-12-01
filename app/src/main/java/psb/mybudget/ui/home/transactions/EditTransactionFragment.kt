@@ -1,60 +1,82 @@
 package psb.mybudget.ui.home.transactions
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.RecyclerView
 import psb.mybudget.R
+import psb.mybudget.models.Budget
+import psb.mybudget.models.MyTransaction
+import psb.mybudget.models.sql.AppDatabase
+import psb.mybudget.models.sql.DBConverters
+import psb.mybudget.ui.recyclers.MyRecycler
+import psb.mybudget.ui.recyclers.adapters.BudgetNameAdapter
+import psb.mybudget.ui.recyclers.createGridRecycler
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class EditTransactionFragment(private val transaction: MyTransaction) : Fragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [EditTransactionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class EditTransactionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var rootView: View
+    private lateinit var textName: EditText
+    private lateinit var textAmount: EditText
+    private lateinit var calendar: CalendarView
+    private lateinit var spinner: Spinner
+    private lateinit var budgetRecycler: MyRecycler<BudgetNameAdapter, BudgetNameAdapter.Data>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_transaction, container, false)
+        rootView = inflater.inflate(R.layout.fragment_edit_transaction, container, false)
+
+        textName = rootView.findViewById(R.id.fet_editText_transactionName)
+        textAmount = rootView.findViewById(R.id.fet_editNumber_transactionAmount)
+        calendar = rootView.findViewById(R.id.fet_calendar_transactionDate)
+        spinner = rootView.findViewById(R.id.fet_spinner_transactionStatus)
+
+        textName.setText(transaction.name)
+        textAmount.setText(transaction.amount.toString())
+        calendar.date = DBConverters().dateToTimestamp(transaction.date)!!
+        ArrayAdapter.createFromResource(rootView.context, R.array.transaction_status_value, android.R.layout.simple_spinner_item)
+            .also { adapter ->
+                // Specify the layout to use when the list of choices appears
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                // Apply the adapter to the spinner
+                spinner.adapter = adapter
+                spinner.setSelection(transaction.transactionType.ordinal)
+            }
+
+        val liveData = MutableLiveData<List<BudgetNameAdapter.Data>>()
+        liveData.observe(viewLifecycleOwner) { budgets ->
+            budgetRecycler = createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
+                R.id.fet_recycler_transactionBudgets, R.layout.recycler_budget_id, rootView, 4)
+        }
+        AppDatabase.getInstance(rootView.context).BudgetTable().getAllAndMatchByTransactionIdIn(transaction.ID, liveData)
+
+        return rootView
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EditTransactionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EditTransactionFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        if(textName.text.toString() != "" && textAmount.text.toString().toDouble() != 0.0) {
+            transaction.name = textName.text.toString()
+            transaction.amount = textAmount.text.toString().toDouble()
+            transaction.date = DBConverters().fromTimestamp(calendar.date)!!
+            //transaction.transactionType = spinner.selectedItemPosition
+
+            Log.i("Updating", transaction.toString())
+            AppDatabase.getInstance().TransactionTable().update(transaction)
+        }
+        else{
+            Toast.makeText(context, "You must fill name and amount fields", Toast.LENGTH_SHORT).show()
+        }
     }
 }

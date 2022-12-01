@@ -2,6 +2,7 @@ package psb.mybudget.ui.home.transactions
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,15 +39,11 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
 
     private lateinit var budget: Budget
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
         _view = inflater.inflate(R.layout.fragment_transaction_list, container, false)
@@ -81,26 +78,25 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
             rootView.background = gd
         }
 
-        val list: MutableList<MyTransaction> = mutableListOf()
-        db.TransactionTable().getAllIn(budgetId, list)
-        val transactionList: MutableLiveData<MutableList<MyTransaction>> = MutableLiveData(list)
+        val transactionList: MutableLiveData<List<MyTransaction>> = MutableLiveData(listOf())
         transactionList.observe(viewLifecycleOwner, Observer { transactions ->
             createLinearRecycler(
                 addBooleanToList(transactions, false).toTypedArray(), TransactionAdapter::class.java,
                 R.id.recyclerTransactionList, R.layout.recycler_transaction, rootView)
         })
+        db.TransactionTable().getAllIn(budgetId, transactionList)
 
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 when(position){
-                    0 -> transactionList.value = list.sortedBy { it.date } as MutableList<MyTransaction>
-                    1 -> transactionList.value = list.sortedByDescending { it.date } as MutableList<MyTransaction>
-                    2 -> transactionList.value = list.sortedBy { it.amount } as MutableList<MyTransaction>
-                    3 -> transactionList.value = list.sortedByDescending { it.amount } as MutableList<MyTransaction>
-                    4 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.RECEIVED } as MutableList<MyTransaction>
-                    5 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.PAID } as MutableList<MyTransaction>
-                    6 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.WITHHELD } as MutableList<MyTransaction>
-                    7 -> transactionList.value = list.sortedBy { it.transactionType == TransactionType.RECEIVE_PENDING } as MutableList<MyTransaction>
+                    0 -> transactionList.value = transactionList.value?.sortedBy { it.date }
+                    1 -> transactionList.value = transactionList.value?.sortedByDescending { it.date }
+                    2 -> transactionList.value = transactionList.value?.sortedBy { it.amount }
+                    3 -> transactionList.value = transactionList.value?.sortedByDescending { it.amount }
+                    4 -> transactionList.value = transactionList.value?.sortedByDescending { it.transactionType == TransactionType.RECEIVED }
+                    5 -> transactionList.value = transactionList.value?.sortedByDescending { it.transactionType == TransactionType.PAID }
+                    6 -> transactionList.value = transactionList.value?.sortedByDescending { it.transactionType == TransactionType.WITHHELD }
+                    7 -> transactionList.value = transactionList.value?.sortedByDescending { it.transactionType == TransactionType.RECEIVE_PENDING }
                 }
             }
 

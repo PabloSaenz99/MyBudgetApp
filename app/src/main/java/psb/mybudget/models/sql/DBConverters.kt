@@ -1,7 +1,9 @@
 package psb.mybudget.models.sql
 
 import androidx.room.TypeConverter
+import psb.mybudget.models.Budget
 import java.util.*
+
 
 class DBConverters {
     @TypeConverter

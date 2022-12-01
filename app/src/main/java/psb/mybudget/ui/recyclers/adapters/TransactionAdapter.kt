@@ -1,17 +1,21 @@
 package psb.mybudget.ui.recyclers.adapters
 
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import psb.mybudget.R
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
+import psb.mybudget.ui.home.transactions.EditTransactionFragment
 import psb.mybudget.ui.recyclers.MyViewHolder
 import psb.mybudget.ui.recyclers.createGridRecycler
 import psb.mybudget.utils.getStroke
+import psb.mybudget.utils.replaceFragment
 
 
 class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Boolean>>(itemView) {
@@ -52,16 +56,20 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Bool
             itemView.background = getStroke(itemView, R.color.positive_value)
         }
 
-        AppDatabase.getInstance(itemView.context).BudgetTable().getByTransactionId(transaction.ID).asLiveData()
-            .observe(itemView.context as LifecycleOwner) { budgets ->
-                createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
-                    R.id.rt_recycler_transactionBudgets, R.layout.recycler_budget_id, itemView, 4)
+        val mutable = MutableLiveData<List<BudgetNameAdapter.Data>>()
+        mutable.observe(itemView.context as LifecycleOwner) { budgets ->
+            createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
+                R.id.rt_recycler_transactionBudgets, R.layout.recycler_budget_id, itemView, 4)
         }
+        AppDatabase.getInstance(itemView.context).BudgetTable().getByTransactionIdIn(transaction.ID, mutable)
 
         if(isEnabled){
             itemView.setOnClickListener {
                 //TODO: click button
             }
+        }
+        itemView.setOnClickListener {
+            replaceFragment(EditTransactionFragment(transaction))
         }
     }
 

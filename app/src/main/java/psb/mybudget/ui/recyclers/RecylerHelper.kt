@@ -9,6 +9,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,15 +26,15 @@ import androidx.recyclerview.widget.RecyclerView
  * @param <ELEMENT> tipo de dato proporcionado
  * @return el adaptador creado
 </ELEMENT></T> */
-fun <T, ELEMENT> createLinearRecycler(
-    data: Array<ELEMENT>, viewHolderClass: Class<T>,
+fun <ViewHolder, ELEMENT> createLinearRecycler(
+    data: Array<ELEMENT>, viewHolderClass: Class<ViewHolder>,
     @IdRes recyclerId: Int, @LayoutRes layoutId: Int, view: View,
     @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
-): MyRecycler<T, ELEMENT> where T : MyViewHolder<ELEMENT> {
+): MyRecycler<ViewHolder, ELEMENT> where ViewHolder : MyViewHolder<ELEMENT> {
 
     val recyclerView: RecyclerView = view.findViewById(recyclerId)
     recyclerView.layoutManager = LinearLayoutManager(view.context, orientation, false)
-    val adapter: MyRecycler<T, ELEMENT> = MyRecycler(data, layoutId, viewHolderClass)
+    val adapter: MyRecycler<ViewHolder, ELEMENT> = MyRecycler(data, layoutId, viewHolderClass)
     recyclerView.adapter = adapter
 
     return adapter
@@ -51,15 +52,15 @@ fun <T, ELEMENT> createLinearRecycler(
  * @param <ELEMENT> tipo de dato proporcionado
  * @return el adaptador creado
 </ELEMENT></T> */
-fun <T, ELEMENT> createGridRecycler(
-    data: Array<ELEMENT>, viewHolderClass: Class<T>,
+fun <ViewHolder, ELEMENT> createGridRecycler(
+    data: Array<ELEMENT>, viewHolderClass: Class<ViewHolder>,
     @IdRes recyclerId: Int, @LayoutRes layoutId: Int,
     view: View, nColumns: Int = 3
-): MyRecycler<T, ELEMENT> where T : MyViewHolder<ELEMENT> {
+): MyRecycler<ViewHolder, ELEMENT> where ViewHolder : MyViewHolder<ELEMENT> {
 
     val recyclerView: RecyclerView = view.findViewById(recyclerId)
     recyclerView.layoutManager = GridLayoutManager(view.context, nColumns)
-    val my: MyRecycler<T, ELEMENT> = MyRecycler(data, layoutId, viewHolderClass)
+    val my: MyRecycler<ViewHolder, ELEMENT> = MyRecycler(data, layoutId, viewHolderClass)
     recyclerView.adapter = my
     return my
 }

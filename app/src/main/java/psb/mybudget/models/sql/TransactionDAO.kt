@@ -1,10 +1,7 @@
 package psb.mybudget.models.sql
 
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,4 +28,7 @@ interface TransactionDAO {
 
     @Query("DELETE FROM MyTransaction")
     suspend fun deleteAll()
+
+    @Update
+    fun update(transaction: MyTransaction)
 }
