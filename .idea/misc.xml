@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/boder.xml" value="0.2575" />
         <entry key="app/src/main/res/drawable/border.xml" value="0.2575" />
         <entry key="app/src/main/res/drawable/rounded.xml" value="0.1475" />
+        <entry key="app/src/main/res/layout/activity_edit_budget.xml" value="0.33016304347826086" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_transaction_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_budget.xml" value="0.25" />

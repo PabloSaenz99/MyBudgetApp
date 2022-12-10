@@ -7,18 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import androidx.recyclerview.widget.RecyclerView
 import psb.mybudget.R
-import psb.mybudget.models.Budget
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.models.sql.DBConverters
 import psb.mybudget.ui.recyclers.MyRecycler
 import psb.mybudget.ui.recyclers.adapters.BudgetNameAdapter
 import psb.mybudget.ui.recyclers.createGridRecycler
+import psb.mybudget.utils.removeFragment
 
 class EditTransactionFragment(private val transaction: MyTransaction) : Fragment() {
 
@@ -28,7 +25,8 @@ class EditTransactionFragment(private val transaction: MyTransaction) : Fragment
     private lateinit var calendar: CalendarView
     private lateinit var spinner: Spinner
     private lateinit var budgetRecycler: MyRecycler<BudgetNameAdapter, BudgetNameAdapter.Data>
-
+    private var cancel: Boolean = false
+    private var delete: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +39,15 @@ class EditTransactionFragment(private val transaction: MyTransaction) : Fragment
         textAmount = rootView.findViewById(R.id.fet_editNumber_transactionAmount)
         calendar = rootView.findViewById(R.id.fet_calendar_transactionDate)
         spinner = rootView.findViewById(R.id.fet_spinner_transactionStatus)
+
+        rootView.findViewById<Button>(R.id.fet_button_cancel).setOnClickListener {
+            cancel = !cancel
+            removeFragment(this)
+        }
+        rootView.findViewById<Button>(R.id.fet_button_delete).setOnClickListener {
+            delete = !delete
+            removeFragment(this)
+        }
 
         textName.setText(transaction.name)
         textAmount.setText(transaction.amount.toString())
@@ -66,17 +73,25 @@ class EditTransactionFragment(private val transaction: MyTransaction) : Fragment
 
     override fun onDestroy() {
         super.onDestroy()
-        if(textName.text.toString() != "" && textAmount.text.toString().toDouble() != 0.0) {
-            transaction.name = textName.text.toString()
-            transaction.amount = textAmount.text.toString().toDouble()
-            transaction.date = DBConverters().fromTimestamp(calendar.date)!!
-            //transaction.transactionType = spinner.selectedItemPosition
+        Log.i("Status", "Cancel: $cancel. Delete: $delete")
+        if(!cancel) {
+            if(delete) {
+                AppDatabase.getInstance().TransactionTable().remove(transaction)
+            }
+            else{
+                if(textName.text.toString() != "" && textAmount.text.toString().toDouble() != 0.0) {
+                    transaction.name = textName.text.toString()
+                    transaction.amount = textAmount.text.toString().toDouble()
+                    transaction.date = DBConverters().fromTimestamp(calendar.date)!!
+                    //transaction.transactionType = spinner.selectedItemPosition
 
-            Log.i("Updating", transaction.toString())
-            AppDatabase.getInstance().TransactionTable().update(transaction)
-        }
-        else{
-            Toast.makeText(context, "You must fill name and amount fields", Toast.LENGTH_SHORT).show()
+                    //TODO: insert or update
+                    AppDatabase.getInstance().TransactionTable().insertOrUpdate(transaction)
+                }
+                else{
+                    Toast.makeText(context, "You must fill name and amount fields", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

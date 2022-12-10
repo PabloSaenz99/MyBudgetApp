@@ -10,7 +10,7 @@ import psb.mybudget.models.MyTransaction
 @Dao
 interface TransactionDAO {
     @Query("SELECT * FROM MyTransaction")
-    fun getAll(): Flow<List<MyTransaction>>
+    fun getAll(): List<MyTransaction>
 
     @Query("SELECT * FROM MyTransaction t " +
             "INNER JOIN TransactionBudget tb ON t.ID = tb.transactionId " +
@@ -30,5 +30,5 @@ interface TransactionDAO {
     suspend fun deleteAll()
 
     @Update
-    fun update(transaction: MyTransaction)
+    fun update(transaction: MyTransaction): Int
 }

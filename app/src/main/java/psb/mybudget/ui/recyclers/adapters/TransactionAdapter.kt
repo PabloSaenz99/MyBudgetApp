@@ -1,13 +1,11 @@
 package psb.mybudget.ui.recyclers.adapters
 
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import psb.mybudget.R
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase

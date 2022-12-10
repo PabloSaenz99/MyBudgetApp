@@ -1,10 +1,11 @@
 package psb.mybudget.ui.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,6 +32,18 @@ class HomeFragment : Fragment() {
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         val root: View = binding.root
 
         val homeViewModel = ViewModelProvider(this,
@@ -44,15 +57,11 @@ class HomeFragment : Fragment() {
         }
 
         val button: FloatingActionButton = root.findViewById(R.id.fh_button_add)
-        button.setOnClickListener{
-            replaceFragment(EditTransactionFragment(MyTransaction()))
+        button.setOnClickListener {
+            if((activity?.supportFragmentManager?.backStackEntryCount ?: 0) > 0)
+                replaceFragment(EditTransactionFragment(MyTransaction()))
+            else
+                context?.startActivity(Intent(context, EditBudgetActivity::class.java))
         }
-
-        return root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

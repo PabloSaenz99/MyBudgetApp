@@ -2,12 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <variable name="budgetTitle" type="String"/>
-        <variable name="budgetDescription" type="String"/>
-        <variable name="budgetAmount" type="String"/>
-    </data>
-
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,18 +26,17 @@
 
                 <TextView
                     android:id="@+id/rb_text_budgetName"
-                    android:layout_width="wrap_content"
+                    style="@style/title_l"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    style="@style/title_l"/>
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/rb_text_budgetAmount"
+                    style="@style/amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="@style/amount"
-                    android:text="@{Double.toString(budgetAmount)}€"/>
+                    android:text="0 €" />
             </LinearLayout>
 
             <TextView
@@ -53,8 +46,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-                style="@style/info"
-                android:text="@{budgetDescription}"/>
+                style="@style/info"/>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

@@ -2,7 +2,6 @@ package psb.mybudget.ui.home.transactions
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,13 +64,12 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
         }
         spinner.background = getStroke(rootView, R.color.white, null)
 
-
         CoroutineScope(SupervisorJob()).launch {
             budget = db.BudgetTable().getById(budgetId)
 
             budgetName.text = budget.name
             budgetDesc.text = budget.description
-            budgetAmount.text = budget.amount.toString() + "€"
+            budgetAmount.text = "${db.BudgetTable().getAmount(budgetId)} €"
 
             val gd = GradientDrawable()
             gd.setColor(rootView.context.getColor(budget.color))

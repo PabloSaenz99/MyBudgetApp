@@ -1,10 +1,7 @@
 package psb.mybudget.models.sql
 
 import androidx.annotation.WorkerThread
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import psb.mybudget.models.TransactionBudget
 
 @Dao
@@ -20,7 +17,7 @@ interface TransactionBudgetDAO {
             "WHERE tb.transactionId = :transactionId AND tb.budgetId = :budgetId")
     fun getByTransactionAndBudgetId(transactionId: String, budgetId: String): TransactionBudget
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(transactionBudget: TransactionBudget)
 
     @Delete

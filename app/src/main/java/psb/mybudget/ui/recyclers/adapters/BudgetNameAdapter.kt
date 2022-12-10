@@ -3,7 +3,6 @@ package psb.mybudget.ui.recyclers.adapters
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorRes
-import androidx.lifecycle.LifecycleOwner
 import psb.mybudget.R
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.recyclers.MyViewHolder

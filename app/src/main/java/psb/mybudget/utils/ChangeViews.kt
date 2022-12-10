@@ -11,9 +11,9 @@ import androidx.fragment.app.commit
 import psb.mybudget.R
 import psb.mybudget.ui.MainActivity
 
-fun startActivity(activity: Class<Activity>, context: Context, view: View) {
+fun startActivity(activity: Class<Activity>, context: Context) {
     val intent = Intent(context, activity)
-    view.context.startActivity(intent)
+    context.startActivity(intent)
 }
 
 fun replaceFragment(newFragment: Fragment, @IdRes oldFragmentId: Int = R.id.nav_host_fragment_activity_main,
@@ -23,5 +23,11 @@ fun replaceFragment(newFragment: Fragment, @IdRes oldFragmentId: Int = R.id.nav_
         replace(oldFragmentId, newFragment)
         //disallowAddToBackStack()
         addToBackStack(name)
+    }
+}
+
+fun removeFragment(fragment: Fragment, fragmentManager: FragmentManager = MainActivity.getMainActivity().supportFragmentManager) {
+    fragmentManager.commit {
+        remove(fragment)
     }
 }
