@@ -1,6 +1,10 @@
 package psb.mybudget.ui
 
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -46,5 +50,19 @@ class MainActivity : AppCompatActivity() {
 
         fun setMainActivity(activity: MainActivity) { this.activity = activity }
         fun getMainActivity() : MainActivity = activity
+
+        /**
+         * @param colorRes: R.color.red
+         */
+        fun getColorInt(@ColorRes colorRes: Int) = activity.resources.getColor(colorRes)
+
+        fun getStroke(strokeColor: Int, @ColorInt backgroundColor: Int? = getColorInt(R.color.white)): GradientDrawable {
+            val gd = GradientDrawable()
+            if(backgroundColor != null)
+                gd.setColor(backgroundColor)
+            gd.cornerRadius = activity.resources.getDimension(R.dimen.radius)
+            gd.setStroke(activity.resources.getDimension(R.dimen.stroke).toInt(), activity.resources.getColor(strokeColor))
+            return gd
+        }
     }
 }

@@ -14,12 +14,13 @@ import psb.mybudget.R
 import psb.mybudget.models.Budget
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.MainActivity
+import psb.mybudget.ui.MainActivity.Companion.getStroke
 import psb.mybudget.ui.home.EditBudgetActivity
 import psb.mybudget.ui.home.transactions.TransactionListFragment
 import psb.mybudget.ui.recyclers.MyViewHolder
-import psb.mybudget.utils.getStroke
+import psb.mybudget.utils.FRAGMENT_BUDGET_LIST_ID
+import psb.mybudget.utils.INTENT_BUDGET_ID
 import psb.mybudget.utils.replaceFragment
-import psb.mybudget.utils.startActivity
 
 
 class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
@@ -38,11 +39,11 @@ class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
             textAmount.text = amount + "€"
 
             if(amount.toDouble() >= 0) {
-                itemView.background = getStroke(itemView, R.color.positive_value, budget.color)
+                itemView.background = getStroke(R.color.positive_value, budget.color)
                 textAmount.setTextColor(ContextCompat.getColor(itemView.context, R.color.positive_value))
             }
             else {
-                itemView.background = getStroke(itemView, R.color.negative_value, budget.color)
+                itemView.background = getStroke(R.color.negative_value, budget.color)
                 //itemView.setBackgroundColor(getGradientColor(itemView.context, R.color.negative_value, 0.15))
                 textAmount.setTextColor(ContextCompat.getColor(itemView.context, R.color.negative_value))
             }
@@ -54,12 +55,12 @@ class BudgetAdapter(itemView: View) : MyViewHolder<Budget>(itemView) {
 
         itemView.setOnClickListener {
             MainActivity.getMainActivity().currentBudget = budget.ID
-            replaceFragment(TransactionListFragment(budget.ID), name = "BudgetFragment")
+            replaceFragment(TransactionListFragment(budget.ID), FRAGMENT_BUDGET_LIST_ID)
         }
 
         itemView.setOnLongClickListener {
             val intent = Intent(itemView.context, EditBudgetActivity::class.java)
-            intent.putExtra("ID", data.ID)
+            intent.putExtra(INTENT_BUDGET_ID, data.ID)
             itemView.context.startActivity(intent)
             return@setOnLongClickListener true
         }

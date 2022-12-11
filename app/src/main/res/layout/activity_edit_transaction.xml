@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.home.transactions.EditTransactionFragment">
+    tools:context=".ui.home.transactions.EditTransactionActivity">
 
     <EditText
-        android:id="@+id/fet_editNumber_transactionAmount"
+        android:id="@+id/aet_editNumber_transactionAmount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="5"
@@ -16,19 +16,19 @@
         android:text="3.45"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fet_editText_transactionName" />
+        app:layout_constraintTop_toBottomOf="@+id/aet_editText_transactionName" />
 
     <EditText
-        android:id="@+id/fet_editText_transactionName"
+        android:id="@+id/aet_editText_transactionName"
         style="@style/title_l"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fet_recycler_transactionBudgets" />
+        app:layout_constraintTop_toBottomOf="@+id/aet_recycler_transactionBudgets" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fet_recycler_transactionBudgets"
+        android:id="@+id/aet_recycler_transactionBudgets"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fet_editNumber_transactionAmount">
+        app:layout_constraintTop_toBottomOf="@+id/aet_editNumber_transactionAmount">
 
         <TextView
             android:id="@+id/textView5"
@@ -52,14 +52,14 @@
             android:text="@string/transaction_status_text" />
 
         <Spinner
-            android:id="@+id/fet_spinner_transactionStatus"
+            android:id="@+id/aet_spinner_transactionStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     <CalendarView
-        android:id="@+id/fet_calendar_transactionDate"
+        android:id="@+id/aet_calendar_transactionDate"
         android:layout_width="296dp"
         android:layout_height="313dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,17 +70,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/fet_calendar_transactionDate">
+        app:layout_constraintTop_toBottomOf="@+id/aet_calendar_transactionDate">
 
         <Button
-            android:id="@+id/fet_button_cancel"
+            android:id="@+id/aet_button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@android:string/cancel" />
 
         <Button
-            android:id="@+id/fet_button_delete"
+            android:id="@+id/aet_button_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -24,6 +24,16 @@
         <item>OUTSTANDING</item>
         <item>RECEIVE PENDING</item>
     </string-array>
+
+    <string-array name="budget_colors_name">
+        <item>Red</item>
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Pink</item>
+    </string-array>
+
     <string name="title_activity_transaction_list">TransactionListActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>

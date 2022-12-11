@@ -11,12 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import psb.mybudget.R
 import psb.mybudget.databinding.FragmentHomeBinding
-import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
-import psb.mybudget.ui.home.transactions.EditTransactionFragment
+import psb.mybudget.ui.home.transactions.EditTransactionActivity
 import psb.mybudget.ui.recyclers.adapters.BudgetAdapter
 import psb.mybudget.ui.recyclers.createLinearRecycler
-import psb.mybudget.utils.replaceFragment
 
 class HomeFragment : Fragment() {
 
@@ -33,21 +31,10 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-
         val root: View = binding.root
 
         val homeViewModel = ViewModelProvider(this,
-            HomeViewModelFactory(AppDatabase.getInstance(root.context)))[HomeViewModel::class.java]
+            HomeViewModelFactory(AppDatabase.getInstance(binding.root.context)))[HomeViewModel::class.java]
 
         val adapter = createLinearRecycler(homeViewModel.budgetList.value?.toTypedArray()?: arrayOf(),
             BudgetAdapter::class.java, R.id.fh_recycler_budget, R.layout.recycler_budget, root)
@@ -56,12 +43,18 @@ class HomeFragment : Fragment() {
             budgets?.let { adapter.setData(it.toTypedArray()) }
         }
 
-        val button: FloatingActionButton = root.findViewById(R.id.fh_button_add)
-        button.setOnClickListener {
+        root.findViewById<FloatingActionButton>(R.id.fh_button_add).setOnClickListener {
             if((activity?.supportFragmentManager?.backStackEntryCount ?: 0) > 0)
-                replaceFragment(EditTransactionFragment(MyTransaction()))
+                context?.startActivity(Intent(context, EditTransactionActivity::class.java))
             else
                 context?.startActivity(Intent(context, EditBudgetActivity::class.java))
         }
+
+        return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

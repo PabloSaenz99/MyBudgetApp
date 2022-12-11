@@ -18,6 +18,8 @@
         <entry key="app/src/main/res/layout/fragment_transaction_list.xml" value="0.2817028985507246" />
         <entry key="app/src/main/res/layout/recycler_budget.xml" value="0.2817028985507246" />
         <entry key="app/src/main/res/layout/recycler_budget_id.xml" value="0.2817028985507246" />
+        <entry key="app/src/main/res/layout/recycler_budget_name.xml" value="0.33016304347826086" />
+        <entry key="app/src/main/res/layout/recycler_name.xml" value="0.1671875" />
         <entry key="app/src/main/res/layout/recycler_transaction.xml" value="0.2817028985507246" />
         <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.2817028985507246" />
         <entry key="app/src/main/res/layout/reycler_budget.xml" value="0.2817028985507246" />

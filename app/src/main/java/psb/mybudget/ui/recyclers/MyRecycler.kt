@@ -1,5 +1,6 @@
 package psb.mybudget.ui.recyclers
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,8 +23,12 @@ class MyRecycler<T: MyViewHolder<DATA>, DATA>(
 
     private val holders: MutableList<T> = mutableListOf()
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(data: Array<DATA>) {
+        dataSet = data
+        this.notifyDataSetChanged()
+    }
     fun getItemAt(i: Int): T = holders[i]
-    fun setData(data: Array<DATA>) { dataSet = data }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): T {
         val view = LayoutInflater.from(viewGroup.context)

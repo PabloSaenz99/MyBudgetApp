@@ -1,16 +1,14 @@
 package psb.mybudget.models.sql
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import psb.mybudget.models.*
 import psb.mybudget.R
-import psb.mybudget.ui.recyclers.adapters.BudgetNameAdapter
+import psb.mybudget.ui.recyclers.adapters.NameAdapter
+import psb.mybudget.utils.DEFAULT_BUDGET_ID
 
 @Database(entities = [MyTransaction::class, TransactionBudget::class, Budget::class], version = 1)
 @TypeConverters(DBConverters::class)
@@ -22,9 +20,11 @@ abstract class AppDatabase : RoomDatabase() {
 
     inner class BudgetTable {
         fun getAll() = budgetDAO().getAll()
+        fun getAllIn(destination: MutableLiveData<List<Budget>>) {
+            scope?.launch { budgetDAO().getAll().collect { destination.postValue(it) } }
+        }
         fun getByName(budgetName: String) = budgetDAO().getBudgetByName(budgetName)
         suspend fun getAmount(budgetId: String) : String {
-            Log.i("SUM ID", budgetId)
             return if (isDefaultBudget(budgetId)) {
                 String.format("%.2f", budgetDAO().getDefaultBudgetAmount())
             } else {
@@ -35,22 +35,22 @@ abstract class AppDatabase : RoomDatabase() {
         }
         suspend fun getById(budgetId: String) = budgetDAO().getBudgetById(budgetId)
         fun getByTransactionId(transactionId: String) = budgetDAO().getBudgetsByTransactionId(transactionId)
-        fun getByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<BudgetNameAdapter.Data>>){
+        fun getByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<NameAdapter.Data>>){
             scope?.launch {
                 budgetDAO().getBudgetsByTransactionId(transactionId).collect {
-                    val aux = mutableListOf<BudgetNameAdapter.Data>()
-                    it.forEach { b -> aux.add(BudgetNameAdapter.Data(transactionId, b.ID, b.name, b.color, true)) }
+                    val aux = mutableListOf<NameAdapter.Data>()
+                    it.forEach { b -> aux.add(NameAdapter.Data(transactionId, b.ID, b.name, b.color, true)) }
                     destination.postValue(aux)
                 }
             }
         }
 
-        fun getAllAndMatchByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<BudgetNameAdapter.Data>>, editable: Boolean = false) {
+        fun getAllAndMatchByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<NameAdapter.Data>>, editable: Boolean = false) {
             scope?.launch {
                 getAll().collect { all ->
                     getByTransactionId(transactionId).collect { some ->
-                        val aux = mutableListOf<BudgetNameAdapter.Data>()
-                        all.forEach { b -> aux.add(BudgetNameAdapter.Data(transactionId, b.ID, b.name, b.color, some.contains(b))) }
+                        val aux = mutableListOf<NameAdapter.Data>()
+                        all.forEach { b -> aux.add(NameAdapter.Data(transactionId, b.ID, b.name, b.color, some.contains(b))) }
                         destination.postValue(aux)
                     }
                 }
@@ -58,7 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         fun insertOrUpdate(budget: Budget) {
-            if(budget.ID != Budget.DEFAULT_BUDGET_ID)
+            if(budget.ID != DEFAULT_BUDGET_ID)
                 scope?.launch {
                     val i = budgetDAO().update(budget)
                     if(i == 0) budgetDAO().insert(budget)
@@ -66,7 +66,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         fun remove(budget: Budget) {
-            if(budget.ID != Budget.DEFAULT_BUDGET_ID) {
+            if(budget.ID != DEFAULT_BUDGET_ID) {
                 //TODO: more complex, better delete
                 scope?.launch {
                     transactionBudgetDAO().deleteByBudgetId(budget.ID)
@@ -77,6 +77,7 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     inner class TransactionTable {
+        suspend fun getById(transactionId: String) = transactionDAO().getById(transactionId)
         fun getAllIn(budgetId: String, destination: MutableLiveData<List<MyTransaction>>){
             scope?.launch {
                 if(isDefaultBudget(budgetId))
@@ -89,7 +90,6 @@ abstract class AppDatabase : RoomDatabase() {
         fun insertOrUpdate(transaction: MyTransaction, budgets: List<Budget>? = null) {
             scope?.launch {
                 val i = transactionDAO().update(transaction)
-                Log.i("Num", "$i $transaction")
                 if(i == 0) transactionDAO().insert(transaction)
                 if(budgets.isNullOrEmpty()) {
                     budgetDAO().getBudgetsByTransactionId(transaction.ID).collect { budgetsList ->
@@ -129,7 +129,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    private fun isDefaultBudget(budgetId: String) = budgetId == Budget.DEFAULT_BUDGET_ID
+    private fun isDefaultBudget(budgetId: String) = budgetId == DEFAULT_BUDGET_ID
 
     //Singleton
     companion object {
@@ -145,13 +145,13 @@ abstract class AppDatabase : RoomDatabase() {
                 this.instance = instance
 
                 //Add elements to the database
-                scope?.launch { populateDatabase() }
+                scope?.launch { populateDatabase(context) }
                 // return instance
                 instance
             }
         }
 
-        private suspend fun populateDatabase() {
+        private suspend fun populateDatabase(context: Context) {
             /*
             instance?.budgetDAO()?.deleteAll()
             instance?.transactionDAO()?.deleteAll()
@@ -160,9 +160,9 @@ abstract class AppDatabase : RoomDatabase() {
 
             instance?.budgetDAO()?.getAll()?.collect{ it ->
                 if(it.isEmpty()) {
-                    val b0 = Budget(Budget.DEFAULT_BUDGET_ID, "All transactions", R.color.gradient_blue, "Money spent in all transactions")
-                    val b1 = Budget("Food", R.color.gradient_blue, "Money spent in restaurants")
-                    val b2 = Budget("Cinema", R.color.gradient_yellow, "Money spent in cinema")
+                    val b0 = Budget(DEFAULT_BUDGET_ID, "All transactions", context.resources.getColor(R.color.white), "Money spent in all transactions")
+                    val b1 = Budget("Food",  context.resources.getColor(R.color.gradient_blue), "Money spent in restaurants")
+                    val b2 = Budget("Cinema", context.resources.getColor(R.color.gradient_yellow), "Money spent in cinema")
                     instance?.budgetDAO()?.insert(b0)
                     instance?.budgetDAO()?.insert(b1)
                     instance?.budgetDAO()?.insert(b2)
@@ -179,7 +179,6 @@ abstract class AppDatabase : RoomDatabase() {
                     instance?.transactionBudgetDAO()?.insert(TransactionBudget(t2.ID, b2.ID))
                     instance?.transactionBudgetDAO()?.insert(TransactionBudget(t3.ID, b1.ID))
                     instance?.transactionBudgetDAO()?.insert(TransactionBudget(t3.ID, b2.ID))
-
                 }
             }
         }

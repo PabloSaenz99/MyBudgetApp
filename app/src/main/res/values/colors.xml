@@ -9,11 +9,27 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--Custom colors-->
-    <color name="orange">#ff8700</color>
     <color name="disabled">#808080</color>
     <color name="negative_value">#C70039 </color>
     <color name="positive_value">#39912C</color>
 
+    <color name="red">#e60909</color>
+    <color name="orange">#ff8700</color>
+    <color name="yellow">#e9d700</color>
+    <color name="green">#21c24c</color>
+    <color name="blue">#0098ff</color>
+    <color name="pink">#c91cc7</color>
+
+    <array name="budget_colors_int">
+        <item>@color/red</item>
+        <item>@color/orange</item>
+        <item>@color/yellow</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/pink</item>
+    </array>
+
+    <!--Add 26 before hex to make it gradient-->
     <color name="gradient_blue">#260098ff</color>
     <color name="gradient_yellow">#26e9d700</color>
 </resources>

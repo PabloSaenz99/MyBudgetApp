@@ -65,7 +65,7 @@ fun <ViewHolder, ELEMENT> createGridRecycler(
     return my
 }
 
-fun getGradientColorFromRes(context: Context, @ColorRes colorId: Int, perc: Double): Int {
+fun getGradientColorFromRes(context: Context, @ColorRes colorId: Int, perc: Double = 0.0): Int {
     //Get alpha and transform into decimal
     val alpha = Integer.toHexString((255*perc).toInt()).toInt(16)
     //Get color from res
@@ -73,7 +73,7 @@ fun getGradientColorFromRes(context: Context, @ColorRes colorId: Int, perc: Doub
     //Return color argb
     return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color))
 }
-fun getGradientColor(context: Context, @ColorRes colorId: Int, perc: Double): Int {
+fun getGradientColor(context: Context, @ColorRes colorId: Int, perc: Double = 0.0): Int {
     //Get alpha and transform into decimal
     val alpha = Integer.toHexString((255*perc).toInt()).toInt(16)
     //Get color from res

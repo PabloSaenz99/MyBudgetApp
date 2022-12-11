@@ -4,6 +4,7 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import psb.mybudget.models.Budget
 import psb.mybudget.models.MyTransaction
+import psb.mybudget.utils.DEFAULT_BUDGET_ID
 
 @Dao
 interface BudgetDAO {
@@ -19,7 +20,7 @@ interface BudgetDAO {
             "WHERE tb.transactionId = :transactionId")
     fun getBudgetsByTransactionId(transactionId: String): Flow<List<Budget>>
 
-    @Query("SELECT * FROM Budget b WHERE b.ID = '${Budget.DEFAULT_BUDGET_ID}'")
+    @Query("SELECT * FROM Budget b WHERE b.ID = '${DEFAULT_BUDGET_ID}'")
     suspend fun getDefaultBudget(): Budget
 
     @Query("SELECT * FROM Budget b WHERE b.ID = :budgetId")

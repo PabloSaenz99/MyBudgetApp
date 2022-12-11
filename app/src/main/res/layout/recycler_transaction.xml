@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layoutManager="GridLayoutManager"
-        tools:listitem="@layout/recycler_budget_id"
+        tools:listitem="@layout/recycler_name"
         tools:spanCount="5" />
 
     <LinearLayout

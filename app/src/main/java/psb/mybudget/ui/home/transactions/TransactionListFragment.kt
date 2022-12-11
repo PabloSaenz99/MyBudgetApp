@@ -2,6 +2,7 @@ package psb.mybudget.ui.home.transactions
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,10 +21,12 @@ import psb.mybudget.models.Budget
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.TransactionType
 import psb.mybudget.models.sql.AppDatabase
+import psb.mybudget.ui.MainActivity.Companion.getColorInt
+import psb.mybudget.ui.MainActivity.Companion.getStroke
+import psb.mybudget.ui.recyclers.MyRecycler
 import psb.mybudget.ui.recyclers.adapters.TransactionAdapter
 import psb.mybudget.ui.recyclers.createLinearRecycler
 import psb.mybudget.utils.addBooleanToList
-import psb.mybudget.utils.getStroke
 
 
 /**
@@ -37,17 +40,17 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
     private val rootView get() = _view!!
 
     private lateinit var budget: Budget
+    private lateinit var db: AppDatabase
+    private val transactionList: MutableLiveData<List<MyTransaction>> = MutableLiveData(listOf())
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-
         _view = inflater.inflate(R.layout.fragment_transaction_list, container, false)
 
-        val db = AppDatabase.getInstance(rootView.context)
+        db = AppDatabase.getInstance(rootView.context)
 
         val budgetView: View = rootView.findViewById(R.id.includeBudget)
         val budgetName: TextView = budgetView.findViewById(R.id.rb_text_budgetName)
@@ -62,7 +65,7 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
             // Apply the adapter to the spinner
             spinner.adapter = adapter
         }
-        spinner.background = getStroke(rootView, R.color.white, null)
+        spinner.background = getStroke(R.color.white, null)
 
         CoroutineScope(SupervisorJob()).launch {
             budget = db.BudgetTable().getById(budgetId)
@@ -72,17 +75,15 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
             budgetAmount.text = "${db.BudgetTable().getAmount(budgetId)} €"
 
             val gd = GradientDrawable()
-            gd.setColor(rootView.context.getColor(budget.color))
+            gd.setColor(budget.color)
             rootView.background = gd
         }
 
-        val transactionList: MutableLiveData<List<MyTransaction>> = MutableLiveData(listOf())
         transactionList.observe(viewLifecycleOwner, Observer { transactions ->
             createLinearRecycler(
                 addBooleanToList(transactions, false).toTypedArray(), TransactionAdapter::class.java,
                 R.id.recyclerTransactionList, R.layout.recycler_transaction, rootView)
         })
-        db.TransactionTable().getAllIn(budgetId, transactionList)
 
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -102,5 +103,10 @@ class TransactionListFragment(private val budgetId: String) : Fragment() {
         }
 
         return rootView
+    }
+
+    override fun onResume() {
+        super.onResume()
+        db.TransactionTable().getAllIn(budgetId, transactionList)
     }
 }

@@ -6,15 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.EditBudgetActivity">
 
-    <EditText
-        android:id="@+id/aeb_editText_budgetName"
+    <RadioGroup
+        android:id="@+id/aeb_radioGroup_budgetColor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"/>
+
+    <EditText
+        android:id="@+id/aeb_editText_budgetName"
         style="@style/title_l"
-        android:hint="@string/budget_name_hint"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/budget_name_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aeb_radioGroup_budgetColor" />
 
     <EditText
         android:id="@+id/aeb_editText_budgetDescription"
@@ -26,19 +35,11 @@
         style="@style/info"
         android:hint="@string/budget_description_hint"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/aeb_recycler_budgetColor"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aeb_editText_budgetDescription" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/aeb_recycler_budgetColor">
+        app:layout_constraintTop_toBottomOf="@+id/aeb_editText_budgetDescription">
 
         <Button
             android:id="@+id/aeb_button_cancel"

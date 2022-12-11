@@ -1,5 +1,6 @@
 package psb.mybudget.ui.recyclers.adapters
 
+import android.content.Intent
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -9,11 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import psb.mybudget.R
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
-import psb.mybudget.ui.home.transactions.EditTransactionFragment
+import psb.mybudget.ui.MainActivity.Companion.getStroke
+import psb.mybudget.ui.home.transactions.EditTransactionActivity
 import psb.mybudget.ui.recyclers.MyViewHolder
 import psb.mybudget.ui.recyclers.createGridRecycler
-import psb.mybudget.utils.getStroke
-import psb.mybudget.utils.replaceFragment
+import psb.mybudget.utils.INTENT_TRANSACTION_ID
 
 
 class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Boolean>>(itemView) {
@@ -47,17 +48,17 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Bool
 
         if(transaction.amount < 0) {
             textAmount.setTextColor(itemView.resources.getColor(R.color.negative_value))
-            itemView.background = getStroke(itemView, R.color.negative_value)
+            itemView.background = getStroke(R.color.negative_value)
         }
         else {
             textAmount.setTextColor(itemView.resources.getColor(R.color.positive_value))
-            itemView.background = getStroke(itemView, R.color.positive_value)
+            itemView.background = getStroke(R.color.positive_value)
         }
 
-        val mutable = MutableLiveData<List<BudgetNameAdapter.Data>>()
+        val mutable = MutableLiveData<List<NameAdapter.Data>>()
         mutable.observe(itemView.context as LifecycleOwner) { budgets ->
-            createGridRecycler(budgets.toTypedArray(), BudgetNameAdapter::class.java,
-                R.id.rt_recycler_transactionBudgets, R.layout.recycler_budget_id, itemView, 4)
+            createGridRecycler(budgets.toTypedArray(), NameAdapter::class.java,
+                R.id.rt_recycler_transactionBudgets, R.layout.recycler_name, itemView, 4)
         }
         AppDatabase.getInstance(itemView.context).BudgetTable().getByTransactionIdIn(transaction.ID, mutable)
 
@@ -67,7 +68,9 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Bool
             }
         }
         itemView.setOnClickListener {
-            replaceFragment(EditTransactionFragment(transaction))
+            val intent = Intent(itemView.context, EditTransactionActivity::class.java)
+            intent.putExtra(INTENT_TRANSACTION_ID, transaction.ID)
+            itemView.context.startActivity(intent)
         }
     }
 
