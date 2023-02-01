@@ -1,19 +1,17 @@
-package psb.mybudget.ui.home
+package psb.mybudget.ui.home.budgets
 
+import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.*
+import androidx.navigation.navArgs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import psb.mybudget.R
 import psb.mybudget.models.Budget
 import psb.mybudget.models.sql.AppDatabase
-import psb.mybudget.utils.INTENT_BUDGET_ID
+import psb.mybudget.ui.MainActivity
 
 class EditBudgetActivity : AppCompatActivity() {
 
@@ -42,24 +40,34 @@ class EditBudgetActivity : AppCompatActivity() {
             finish()
         }
 
-        CoroutineScope(SupervisorJob()).launch {
-            val id = intent.getStringExtra(INTENT_BUDGET_ID)
-            budget = if(id == null) Budget() else AppDatabase.getInstance().BudgetTable().getById(id)
-
-            textName.setText(budget.name)
-            textDescription.setText(budget.description)
-        }
-
         val colorNames = resources.getStringArray(R.array.budget_colors_name)
-        val colorInts = resources.getIntArray(R.array.budget_colors_int)
 
         radioGroup = findViewById(R.id.aeb_radioGroup_budgetColor)
         radioGroup.removeAllViewsInLayout()
         for(i in colorNames.indices){
             val rb = RadioButton(this)
-            rb.text = colorNames[i]
-            rb.setBackgroundColor(colorInts[i])
+            rb.text = colorNames[i] + "  "
+            rb.background = MainActivity.getStrokeFromColorIntResolved(resources.getIntArray(R.array.budget_colors_int)[i])
             radioGroup.addView(rb)
+        }
+        radioGroup.check(-1)
+
+        val instance = this
+        radioGroup.setOnCheckedChangeListener { _, i ->
+            val gd = GradientDrawable()
+            gd.setColor(resources.getIntArray(R.array.budget_colors_int)[i - 1])
+            instance.window.decorView.background = gd
+        }
+
+        CoroutineScope(SupervisorJob()).launch {
+            val args: EditBudgetActivityArgs by navArgs()
+            val id = args.StringBudgetId
+            budget = if(id == null) Budget() else AppDatabase.getInstance().BudgetTable().getById(id)
+
+            textName.setText(budget.name)
+            textDescription.setText(budget.description)
+            //TODO: check color
+            //radioGroup.check( resources.getIntArray(R.array.budget_colors_int)[budget.color])
         }
     }
 
@@ -72,7 +80,8 @@ class EditBudgetActivity : AppCompatActivity() {
             else if (textName.text.toString() != "") {
                 budget.name = textName.text.toString()
                 budget.description = textDescription.text.toString()
-                budget.color = resources.getIntArray(R.array.budget_colors_int)[radioGroup.checkedRadioButtonId - 1]
+                if(radioGroup.checkedRadioButtonId > 0 && radioGroup.checkedRadioButtonId < resources.getIntArray(R.array.budget_colors_int).size)
+                    budget.color = resources.getIntArray(R.array.budget_colors_int)[radioGroup.checkedRadioButtonId - 1]
 
                 AppDatabase.getInstance().BudgetTable().insertOrUpdate(budget)
             }

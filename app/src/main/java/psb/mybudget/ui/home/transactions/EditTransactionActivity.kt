@@ -4,17 +4,22 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navArgs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import psb.mybudget.R
 import psb.mybudget.models.MyTransaction
+import psb.mybudget.models.TransactionType
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.models.sql.DBConverters
+import psb.mybudget.ui.home.budgets.EditBudgetActivityArgs
 import psb.mybudget.ui.recyclers.MyRecycler
 import psb.mybudget.ui.recyclers.adapters.NameAdapter
 import psb.mybudget.ui.recyclers.createGridRecycler
 import psb.mybudget.utils.INTENT_TRANSACTION_ID
+import kotlin.math.abs
 
 class EditTransactionActivity : AppCompatActivity() {
 
@@ -55,8 +60,9 @@ class EditTransactionActivity : AppCompatActivity() {
             finish()
         }
 
+        val args: EditTransactionActivityArgs by navArgs()
         CoroutineScope(SupervisorJob()).launch {
-            val id = intent.getStringExtra(INTENT_TRANSACTION_ID)
+            val id = args.StringTransactionId
             transaction = if(id == null) MyTransaction() else appDatabase.TransactionTable().getById(id)
 
             textName.setText(transaction.name)
@@ -87,9 +93,12 @@ class EditTransactionActivity : AppCompatActivity() {
             else{
                 if(textName.text.toString() != "" && textAmount.text.toString().toDouble() != 0.0) {
                     transaction.name = textName.text.toString()
-                    transaction.amount = textAmount.text.toString().toDouble()
+                    transaction.amount = abs(textAmount.text.toString().toDouble())
                     transaction.date = DBConverters().fromTimestamp(calendar.date)!!
-                    //transaction.transactionType = spinner.selectedItemPosition
+                    transaction.transactionType = TransactionType.fromInt(spinner.selectedItemPosition)
+
+                    if(transaction.transactionType == TransactionType.PAID || transaction.transactionType == TransactionType.WITHHELD)
+                        transaction.amount = -transaction.amount
 
                     appDatabase.TransactionTable().insertOrUpdate(transaction)
                 }

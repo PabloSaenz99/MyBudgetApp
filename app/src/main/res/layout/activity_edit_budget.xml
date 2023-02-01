@@ -4,16 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.EditBudgetActivity">
+    tools:context=".ui.home.budgets.EditBudgetActivity">
 
     <RadioGroup
         android:id="@+id/aeb_radioGroup_budgetColor"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:overScrollMode="always"
+        android:scrollIndicators="bottom"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="horizontal"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/aeb_editText_budgetName"

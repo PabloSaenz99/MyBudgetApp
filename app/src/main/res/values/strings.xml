@@ -32,6 +32,7 @@
         <item>Green</item>
         <item>Blue</item>
         <item>Pink</item>
+        <item>White</item>
     </string-array>
 
     <string name="title_activity_transaction_list">TransactionListActivity</string>
@@ -44,4 +45,7 @@
     <string name="delete">Delete</string>
     <string name="budget_name_hint">Budget name</string>
     <string name="budget_description_hint">Budget description</string>
+    <!--Safeargs-->
+    <string name="budgetId">budgetId</string>
+    <string name="transactionId">transactionId</string>
 </resources>

@@ -1,14 +1,18 @@
 package psb.mybudget.models.sql
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import psb.mybudget.models.*
 import psb.mybudget.R
+import psb.mybudget.models.*
 import psb.mybudget.ui.recyclers.adapters.NameAdapter
 import psb.mybudget.utils.DEFAULT_BUDGET_ID
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 
 @Database(entities = [MyTransaction::class, TransactionBudget::class, Budget::class], version = 1)
 @TypeConverters(DBConverters::class)
@@ -25,12 +29,14 @@ abstract class AppDatabase : RoomDatabase() {
         }
         fun getByName(budgetName: String) = budgetDAO().getBudgetByName(budgetName)
         suspend fun getAmount(budgetId: String) : String {
+            val df = DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH))
+            df.maximumFractionDigits = 2
             return if (isDefaultBudget(budgetId)) {
-                String.format("%.2f", budgetDAO().getDefaultBudgetAmount())
+                df.format(budgetDAO().getDefaultBudgetAmount())
             } else {
                 val res = budgetDAO().getAmountById(budgetId)
-                if(res == null) "0"
-                else String.format("%.2f", res)
+                if(res == null) "0.0"
+                else df.format(res)
             }
         }
         suspend fun getById(budgetId: String) = budgetDAO().getBudgetById(budgetId)
@@ -45,7 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        fun getAllAndMatchByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<NameAdapter.Data>>, editable: Boolean = false) {
+        fun getAllAndMatchByTransactionIdIn(transactionId: String, destination: MutableLiveData<List<NameAdapter.Data>>) {
             scope?.launch {
                 getAll().collect { all ->
                     getByTransactionId(transactionId).collect { some ->
@@ -60,16 +66,15 @@ abstract class AppDatabase : RoomDatabase() {
         fun insertOrUpdate(budget: Budget) {
             if(budget.ID != DEFAULT_BUDGET_ID)
                 scope?.launch {
-                    val i = budgetDAO().update(budget)
-                    if(i == 0) budgetDAO().insert(budget)
+                    if(budgetDAO().update(budget) == 0)
+                        budgetDAO().insert(budget)
                 }
         }
 
         fun remove(budget: Budget) {
             if(budget.ID != DEFAULT_BUDGET_ID) {
-                //TODO: more complex, better delete
                 scope?.launch {
-                    transactionBudgetDAO().deleteByBudgetId(budget.ID)
+                    TransactionBudgetTable().removeAllTransactionsFromBudget(budget.ID)
                     budgetDAO().delete(budget)
                 }
             }
@@ -89,19 +94,13 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun insertOrUpdate(transaction: MyTransaction, budgets: List<Budget>? = null) {
             scope?.launch {
-                val i = transactionDAO().update(transaction)
-                if(i == 0) transactionDAO().insert(transaction)
+                if(transactionDAO().update(transaction) == 0)
+                    transactionDAO().insert(transaction)
                 if(budgets.isNullOrEmpty()) {
-                    budgetDAO().getBudgetsByTransactionId(transaction.ID).collect { budgetsList ->
-                        if (budgetsList.isEmpty()) {
-                            transactionBudgetDAO().insert(TransactionBudget(transaction.ID, budgetDAO().getDefaultBudget().ID))
-                        } else {
-                            budgetsList.forEach { b -> transactionBudgetDAO().insert(TransactionBudget(transaction.ID, b.ID)) }
-                        }
-                    }
+                    TransactionBudgetTable().insertDefaultBudgetIfNoBudgets(transaction.ID)
                 }
                 else {
-                    budgets.forEach { b -> transactionBudgetDAO().insert(TransactionBudget(transaction.ID, b.ID)) }
+                    TransactionBudgetTable().insertTransactionIntoManyBudgets(transaction.ID, budgets)
                 }
             }
         }
@@ -115,18 +114,66 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     inner class TransactionBudgetTable() {
-        fun insert(transactionId: String, budgetId: String){
+        fun insertTransactionIntoManyBudgets(transactionId: String, budgets: List<Budget>){
             scope?.launch {
-                transactionBudgetDAO().insert(TransactionBudget(transactionId, budgetId))
+                budgets.forEach { b -> transactionBudgetDAO().insert(TransactionBudget(transactionId, b.ID)) }
+                if(hasDefaultBudget(transactionId) && transactionBudgetDAO().getByTransactionId(transactionId).size > 1) {
+                    //If it has default budget and more than one budget, remove default
+                    transactionBudgetDAO().delete(TransactionBudget(transactionId, DEFAULT_BUDGET_ID))
+                }
+            }
+        }
+
+        fun insertDefaultBudgetIfNoBudgets(transactionId: String) {
+            scope?.launch {
+                if(!hasBudgets(transactionId)) {
+                    transactionBudgetDAO().insert(TransactionBudget(transactionId, DEFAULT_BUDGET_ID))
+                }
+            }
+        }
+
+        fun insert(transactionId: String, budgetId: String){
+            if(budgetId != DEFAULT_BUDGET_ID)   //Cannot manually insert default budget
+                scope?.launch {
+                    transactionBudgetDAO().insert(TransactionBudget(transactionId, budgetId))
+                    if(hasDefaultBudget(transactionId)) {   //If it has default budget, remove it (because it already has the above one)
+                        transactionBudgetDAO().delete(TransactionBudget(transactionId, DEFAULT_BUDGET_ID))
+                    }
+                }
+        }
+
+        fun removeAllTransactionsFromBudget(budgetId: String) {
+            if(budgetId != DEFAULT_BUDGET_ID) {
+                scope?.launch {
+                    val transactionsSet = mutableSetOf<String>()
+                    val transactionBudgets = transactionBudgetDAO().getByBudgetId(budgetId) //Get all transactions with this budget
+                    transactionBudgets.forEach { b ->   //Remove this budget from all transactions
+                        transactionBudgetDAO().delete(TransactionBudget(b.transactionId, budgetId))
+                        transactionsSet.add(b.transactionId)
+                    }
+                    transactionsSet.forEach { t ->      //Add default budget to this transaction
+                        if(!hasBudgets(t))
+                            transactionBudgetDAO().insert(TransactionBudget(t, DEFAULT_BUDGET_ID))
+                    }
+                }
             }
         }
 
         fun remove(transactionId: String, budgetId: String){
-            scope?.launch {
-                transactionBudgetDAO().delete(TransactionBudget(transactionId, budgetId))
-                //TODO: check if has any budget
-            }
+            if(budgetId != DEFAULT_BUDGET_ID)   //Cannot manually remove default budget
+                scope?.launch {
+                    transactionBudgetDAO().delete(TransactionBudget(transactionId, budgetId))
+                    if(!hasBudgets(transactionId)) {    //If it hasn't any budget, add default
+                        transactionBudgetDAO().insert(TransactionBudget(transactionId, DEFAULT_BUDGET_ID))
+                    }
+                }
         }
+
+        private suspend fun hasBudgets(transactionId: String): Boolean =
+            transactionBudgetDAO().getBudgetsCountBy(transactionId) > 0
+
+        private suspend fun hasDefaultBudget(transactionId: String): Boolean =
+            transactionBudgetDAO().getByTransactionAndBudgetId(transactionId, DEFAULT_BUDGET_ID) != null
     }
 
     private fun isDefaultBudget(budgetId: String) = budgetId == DEFAULT_BUDGET_ID

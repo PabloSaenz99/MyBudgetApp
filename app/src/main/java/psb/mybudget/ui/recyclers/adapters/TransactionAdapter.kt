@@ -7,11 +7,14 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.findNavController
 import psb.mybudget.R
 import psb.mybudget.models.MyTransaction
 import psb.mybudget.models.sql.AppDatabase
 import psb.mybudget.ui.MainActivity.Companion.getStroke
+import psb.mybudget.ui.home.budgets.BudgetListFragmentDirections
 import psb.mybudget.ui.home.transactions.EditTransactionActivity
+import psb.mybudget.ui.home.transactions.TransactionListFragmentDirections
 import psb.mybudget.ui.recyclers.MyViewHolder
 import psb.mybudget.ui.recyclers.createGridRecycler
 import psb.mybudget.utils.INTENT_TRANSACTION_ID
@@ -68,9 +71,12 @@ class TransactionAdapter(itemView: View) : MyViewHolder<Pair<MyTransaction, Bool
             }
         }
         itemView.setOnClickListener {
+            val action = TransactionListFragmentDirections.actionTransactionListFragmentToEditTransactionActivity(transaction.ID)
+            itemView.findNavController().navigate(action)
+            /*
             val intent = Intent(itemView.context, EditTransactionActivity::class.java)
             intent.putExtra(INTENT_TRANSACTION_ID, transaction.ID)
-            itemView.context.startActivity(intent)
+            itemView.context.startActivity(intent)*/
         }
     }
 

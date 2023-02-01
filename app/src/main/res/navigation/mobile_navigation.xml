@@ -3,11 +3,75 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_budget">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="psb.mybudget.ui.home.HomeFragment"
+        android:id="@+id/navigation_budget"
+        android:name="psb.mybudget.ui.home.budgets.BudgetListFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_budget_list" >
+        <action
+            android:id="@+id/action_navigation_budget_to_transactionListFragment"
+            app:destination="@id/transactionListFragment" />
+        <action
+            android:id="@+id/action_navigation_budget_to_graphFragment"
+            app:destination="@id/graphFragment" />
+        <action
+            android:id="@+id/action_navigation_budget_to_editBudgetActivity"
+            app:destination="@id/editBudgetActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionListFragment"
+        android:name="psb.mybudget.ui.home.transactions.TransactionListFragment"
+        android:label="fragment_transaction_list"
+        tools:layout="@layout/fragment_transaction_list" >
+        <action
+            android:id="@+id/action_transactionListFragment_to_editTransactionActivity"
+            app:destination="@id/editTransactionActivity" />
+        <argument
+            android:name="@string/budgetId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/graphFragment"
+        android:name="psb.mybudget.ui.graphic.GraphFragment"
+        android:label="fragment_graph"
+        tools:layout="@layout/fragment_graph" >
+        <argument
+            android:name="@string/budgetId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <activity
+        android:id="@+id/editBudgetActivity"
+        android:name="psb.mybudget.ui.home.budgets.EditBudgetActivity"
+        android:label="activity_edit_budget"
+        tools:layout="@layout/activity_edit_budget">
+        <argument
+            app:nullable="true"
+            android:name="@string/budgetId"
+            app:argType="string"
+            android:defaultValue="@null"/>
+    </activity>
+
+    <activity
+        android:id="@+id/editTransactionActivity"
+        android:name="psb.mybudget.ui.home.transactions.EditTransactionActivity"
+        android:label="activity_edit_transaction"
+        tools:layout="@layout/activity_edit_transaction" >
+        <argument
+            android:name="@string/transactionId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="@string/budgetId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </activity>
+
 </navigation>

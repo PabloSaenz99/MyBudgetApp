@@ -2,9 +2,9 @@ package psb.mybudget.ui
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -37,10 +37,9 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home
-            )
+            setOf(R.id.navigation_budget, R.id.navigation_graphics)
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
@@ -56,12 +55,28 @@ class MainActivity : AppCompatActivity() {
          */
         fun getColorInt(@ColorRes colorRes: Int) = activity.resources.getColor(colorRes)
 
-        fun getStroke(strokeColor: Int, @ColorInt backgroundColor: Int? = getColorInt(R.color.white)): GradientDrawable {
+        fun getStroke(@ColorRes strokeColor: Int, @ColorInt backgroundColor: Int? = getColorInt(R.color.white)): GradientDrawable {
             val gd = GradientDrawable()
             if(backgroundColor != null)
                 gd.setColor(backgroundColor)
             gd.cornerRadius = activity.resources.getDimension(R.dimen.radius)
             gd.setStroke(activity.resources.getDimension(R.dimen.stroke).toInt(), activity.resources.getColor(strokeColor))
+            return gd
+        }
+
+        fun getStrokeFromColorIntResolved(@ColorInt strokeColor: Int, @ColorInt backgroundColor: Int? = getColorInt(R.color.white)): GradientDrawable {
+            val gd = GradientDrawable()
+            if(backgroundColor != null)
+                gd.setColor(backgroundColor)
+            gd.cornerRadius = activity.resources.getDimension(R.dimen.radius)
+            gd.setStroke(activity.resources.getDimension(R.dimen.stroke).toInt(), strokeColor)
+            return gd
+        }
+
+        fun getRoundedBackGround(@ColorInt backgroundColor: Int, @DimenRes radius: Int = R.dimen.radius): GradientDrawable {
+            val gd = GradientDrawable()
+            gd.setColor(backgroundColor)
+            gd.cornerRadius = activity.resources.getDimension(radius)
             return gd
         }
     }

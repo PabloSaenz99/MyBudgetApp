@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyBudget">
         <activity
-            android:name=".ui.home.EditBudgetActivity"
+            android:name=".ui.home.budgets.EditBudgetActivity"
             android:exported="false" />
         <activity
             android:name=".ui.home.transactions.EditTransactionActivity"

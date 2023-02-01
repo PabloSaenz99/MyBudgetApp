@@ -6,7 +6,6 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
 
     <!--Custom colors-->
     <color name="disabled">#808080</color>
@@ -19,6 +18,7 @@
     <color name="green">#21c24c</color>
     <color name="blue">#0098ff</color>
     <color name="pink">#c91cc7</color>
+    <color name="white">#ffffff</color>
 
     <array name="budget_colors_int">
         <item>@color/red</item>
@@ -27,6 +27,7 @@
         <item>@color/green</item>
         <item>@color/blue</item>
         <item>@color/pink</item>
+        <item>@color/white</item>
     </array>
 
     <!--Add 26 before hex to make it gradient-->

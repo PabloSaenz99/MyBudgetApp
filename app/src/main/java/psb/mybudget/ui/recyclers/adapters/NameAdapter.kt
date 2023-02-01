@@ -5,7 +5,9 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import psb.mybudget.R
 import psb.mybudget.models.sql.AppDatabase
+import psb.mybudget.ui.MainActivity
 import psb.mybudget.ui.MainActivity.Companion.getColorInt
+import psb.mybudget.ui.MainActivity.Companion.getRoundedBackGround
 import psb.mybudget.ui.recyclers.MyViewHolder
 import psb.mybudget.utils.DEFAULT_BUDGET_ID
 
@@ -24,18 +26,18 @@ class NameAdapter(itemView: View) : MyViewHolder<NameAdapter.Data>(itemView) {
             itemView.visibility = View.GONE
         */
         if(!this.data.isSelected || this.data.budgetID == DEFAULT_BUDGET_ID)
-            itemView.setBackgroundColor(getColorInt(R.color.disabled))
+            itemView.background = MainActivity.getStroke(R.color.disabled, null)
         else
-            itemView.setBackgroundColor(this.data.color)
+            itemView.background = MainActivity.getStrokeFromColorIntResolved(this.data.color, this.data.color)
 
         if(this.data.budgetID != DEFAULT_BUDGET_ID) {
             itemView.setOnClickListener {
                 if (this.data.isSelected) {
                     AppDatabase.getInstance().TransactionBudgetTable().remove(this.data.transactionId, this.data.budgetID)
-                    itemView.setBackgroundColor(itemView.context.getColor(R.color.disabled))
+                    itemView.background = MainActivity.getStroke(R.color.disabled, null)
                 } else {
                     AppDatabase.getInstance().TransactionBudgetTable().insert(this.data.transactionId, this.data.budgetID)
-                    itemView.setBackgroundColor(this.data.color)
+                    itemView.background = MainActivity.getStrokeFromColorIntResolved(this.data.color, this.data.color)
                 }
             }
         }

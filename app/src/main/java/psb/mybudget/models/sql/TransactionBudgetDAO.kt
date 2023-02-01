@@ -8,14 +8,17 @@ import psb.mybudget.models.TransactionBudget
 interface TransactionBudgetDAO {
 
     @Query("SELECT * FROM TransactionBudget tb WHERE tb.budgetId = :budgetId")
-    fun getByBudgetId(budgetId: String): List<TransactionBudget>
+    suspend fun getByBudgetId(budgetId: String): List<TransactionBudget>
 
     @Query("SELECT * FROM TransactionBudget tb WHERE tb.transactionId = :transactionId")
-    fun getByTransactionId(transactionId: String): List<TransactionBudget>
+    suspend fun getByTransactionId(transactionId: String): List<TransactionBudget>
 
     @Query("SELECT * FROM TransactionBudget tb " +
             "WHERE tb.transactionId = :transactionId AND tb.budgetId = :budgetId")
-    fun getByTransactionAndBudgetId(transactionId: String, budgetId: String): TransactionBudget
+    suspend fun getByTransactionAndBudgetId(transactionId: String, budgetId: String): TransactionBudget?
+
+    @Query("SELECT COUNT(*) FROM TransactionBudget tb WHERE tb.transactionId = :transactionId")
+    suspend fun getBudgetsCountBy(transactionId: String): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(transactionBudget: TransactionBudget)
